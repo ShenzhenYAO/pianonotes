@@ -2,9 +2,9 @@ function makeInputDoms() {
     let inputdiv_d3xn = d3.select('body').append('div').attr('id', 'inputdiv').attr('class', 'inputdivs')
 
     inputdiv_d3xn.append('div').text('start from').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', 7)
+    inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', allnotes.length -5)
     inputdiv_d3xn.append('div').text('number of notes').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', 10)
+    inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', allnotes.length)
     inputdiv_d3xn.append('div').attr('class', 'inputdivs')
     inputdiv_d3xn.append('button').text('make notes').on('click', start).attr('class', 'inputdivs')
 

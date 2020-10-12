@@ -13,7 +13,6 @@ makeBigDivs()
 
 
 
-
 function start() {
 
     // get value from the input box
