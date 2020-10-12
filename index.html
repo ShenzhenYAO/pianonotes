@@ -3,7 +3,7 @@
 <html>
 
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <link rel="stylesheet" href="css/index.css">
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
@@ -12,6 +12,12 @@
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <!-- the following allows to use attrs({})-->
     <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+
+    <!-- <link rel="stylesheet" href="node_modules/html-piano/piano/dist/piano.css">
+    <script src="node_modules/html-piano/piano/dist/piano.js"></script> -->
+
+    <!-- this is the core library to play sound, the above is merely to create a piano, not to be used -->
+    <script src="example/audiosynth.js"></script>
 
 </head>
 
@@ -26,8 +32,8 @@
 
     <script src="js/modules/modules_project.js"></script>
 
-    <!-- <script src="js/index.js"></script> -->
     <script src="js/main.js"></script>
+    <script src="js/modules/makepiano.js"></script>
     <script src="js/test.js"></script>
 
 </body>
