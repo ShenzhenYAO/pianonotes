@@ -1,4 +1,5 @@
-function makeInputDoms() {
+async function makeInputDoms() {
+
     let inputdiv_d3xn = d3.select('body').append('div').attr('id', 'inputdiv').attr('class', 'inputdivs')
 
     inputdiv_d3xn.append('div').text('start from').attr('class', 'inputdivs')
@@ -6,12 +7,12 @@ function makeInputDoms() {
     inputdiv_d3xn.append('div').text('number of notes').attr('class', 'inputdivs')
     inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', allnotes.length)
     inputdiv_d3xn.append('div').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('button').text('make notes').on('click', start).attr('class', 'inputdivs')
+    inputdiv_d3xn.append('button').text('make notes').on('click', async function (){ await start(allnotes)}).attr('class', 'inputdivs')
 
     d3.selectAll('div.inputdivs').style('margin', '10px')
 } //makeInputDoms
 
-function makeBigDivs() {
+async function makeBigDivs() {
     const notediv = d3.select('body').append('div')
         .attrs({ 'id': 'bigdiv', 'name': 'div for notes' })
         .styles({ 'width': '100%' })
@@ -21,8 +22,6 @@ function makeBigDivs() {
     const bigdivl = notediv.append('div')
         .attrs({ 'id': 'bigdivl', 'name': 'Left hand div' })
         .styles({ 'border': 'solid 1px', 'width': '100%', 'height': '150px', 'margin-top': '20px', 'float': 'left' })
-
-    
     
 } // makeBigDivs
 
@@ -33,3 +32,147 @@ function getNotesToDisplay(allnotes, startpos, length) {
     let notes = allnotes.slice(startpos - 1, startpos - 1 + length)
     return notes
 } //getNotesToDisplay
+
+async function start() {
+
+    // get value from the input box
+    let s = document.getElementById('input1')
+    // console.log(parseInt(s.value))
+    let l = document.getElementById('input2')
+    // console.log(parseInt(l.value))
+
+    // get slices of nodes to play
+    let notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
+
+    // make note divs
+    await makeNoteDivs(notes)
+
+    // mke notes
+    await makeNotes(notes, parseInt(s.value), parseInt(l.value))
+
+} //start
+
+
+// make a collection of note divs, each for a note, save to collections (lnotedivs) and rnotedivs
+async function makeNoteDivs(notes) {
+
+    //delete the existing notedivs
+    d3.selectAll('div.notediv').remove()
+
+    let breakele = document.createElement('br')
+    document.body.append(breakele)
+
+    let notelength = notes.length
+
+    for (let z = 0; z <= notelength; z++) {
+        let tmpdiv = document.createElement('div')
+        tmpdiv.setAttribute('class', 'notediv')
+        tmpdiv.setAttribute('id', 'notediv_' + z)
+        bigdivl.appendChild(tmpdiv)
+        lnotedivs.push(tmpdiv)
+
+        tmpdiv = document.createElement('div')
+        tmpdiv.setAttribute('class', 'notediv')
+        tmpdiv.setAttribute('id', 'notediv_' + z)
+        bigdivr.appendChild(tmpdiv)
+        rnotedivs.push(tmpdiv)
+    }
+
+    // console.log (lnotedivs , rnotedivs)
+
+}// makenotedivs
+
+
+async function makeNotes(notes, startpos, length) {
+
+    for (let i = 0; i < notes.length; i++) {
+        let thenote = notes[i]
+        // console.log(thenote)
+        // get the left hand note
+        let left = thenote.left
+        if (left) {
+            if (!left.finger) { left.finger = '' }
+            createNote(left.finger, left.staffpos, 'l', i) //the createNote should be able to descriminate left/right type (a.for define tones (); b. for determine the upper or lower row)
+        }
+        // get the righ hand note
+        let right = thenote.right
+        if (right) {
+            if (!right.finger) { right.finger = '' }
+            createNote(right.finger, right.staffpos, 'r', i)
+        } //if
+    }// for
+} //makeNotes
+
+
+async function createNote(finger, staffpos, hand, noteindex) {
+
+
+    let letternumber = staffpositionToLetterNumber(staffpos, letternumber_for_staffposition1[hand])
+    // console.log(letternumber)
+
+    let letter = NumToToneLetter(letternumber, anchor_A, n_tone_letters)
+    // console.log(letter)
+
+    let imgsrcforpiano;
+
+    if (letter === 'C' || letter === 'D' || letter === 'E') {
+        imgsrcforpiano = 'img/Pianokey1.PNG'
+    } if (letter === 'F' || letter === 'G' || letter === 'A' || letter === 'B') {
+        imgsrcforpiano = 'img/Pianokey2.PNG'
+    }
+
+    let parent;
+    if (hand === 'l') {
+        parent = lnotedivs[noteindex]
+    } if (hand === 'r') {
+        parent = rnotedivs[noteindex]
+    }
+
+    // console.log(' =======================', noteindex, parent)
+
+    let overlaydivcontainer = await adddiv(parent)
+    overlaydivcontainer.setAttribute('class', 'overlaycontain')
+
+    let overlaydiv = document.createElement('div')
+    overlaydivcontainer.appendChild(overlaydiv)
+    overlaydiv.setAttribute('class', 'overlay')
+    overlaydiv.style.display = 'block'
+
+    overlaydiv.innerHTML = letter + '<br/>' + finger
+
+    if (letter == 'C' || letter == 'F') {
+        overlaydivcontainer.style.paddingLeft = '1px'
+    } if (letter == 'E' || letter == 'A') {
+        overlaydivcontainer.style.paddingLeft = '34px'
+    } if (letter == 'B') {
+        overlaydivcontainer.style.paddingLeft = '51px'
+    }
+
+    // let divinside = document.createElement('div')
+    // overlaydiv.appendChild(divinside)
+    // divinside.setAttribute('class', 'text')
+    // divinside.innerText = letter
+
+    var pianoimg = document.createElement('IMG')
+    pianoimg.setAttribute('src', imgsrcforpiano);
+
+    if (hand === 'l') {
+        lnotedivs[noteindex].appendChild(pianoimg);
+    }
+    if (hand === 'r') {
+        rnotedivs[noteindex].appendChild(pianoimg);
+    }
+
+    pianoimg.style.height = '100px'
+    // pianoimg.style.position = 'absolute'
+
+    // clickbutton.onclick = null
+
+
+    async function adddiv(parent) {
+        let div = document.createElement('div')
+        parent.appendChild(div)
+        return div
+    }
+
+} // createnotes

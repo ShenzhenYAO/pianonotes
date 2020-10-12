@@ -2,7 +2,7 @@
 
 //https://developer.mozilla.org/en-US/docs/Web/API/FileReader
 // read contents of a local file
-function readlocalfile(thefileobj, callback_whendoneDosomething) { // the fileobj is a file system object, containing file name, size, path, etc.
+async function readlocalfile(thefileobj, callback_whendoneDosomething) { // the fileobj is a file system object, containing file name, size, path, etc.
     var newreaderinstance = new FileReader(); // create a new instance of FileReader() class
     newreaderinstance.readAsText(thefileobj); // use the method readAsText of the new instance to read the file
     newreaderinstance.onload = callback_whendoneDosomething; // when the loading is done, run the call back function defined in the readfile instance
@@ -83,12 +83,12 @@ async function MakeModalTemplate(modaltemplatedata, notclose) {
     
 } //
 
-function closemodal() {
+async function closemodal() {
     $('#modal-background').remove()
 }
 
 // remove all children nodes from an element
-function removenodes(parent) {
+async function removenodes(parent) {
     // cleanup children
     removeAllChildNodes(parent)
     function removeAllChildNodes(parent) {

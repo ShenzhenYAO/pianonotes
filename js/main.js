@@ -1,152 +1,80 @@
-
-
-let allnotes = datastr_to_stdobj(notesStr)
+"use strict"
 
 var lnotedivs = [], tmpdiv = undefined;
-var rnotedivs = []
+var rnotedivs = [];
+var allnotes = datastr_to_stdobj(notesStr);
+;
+console.log(allnotes)
 
-makeInputDoms()
-makeBigDivs()
+const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+Tone.context.resume().then(() => {
+    Tone.start()
+    // synth.triggerAttackRelease("E4", "4n");
+// synth.triggerAttackRelease("C5", "6n");
+// synth.triggerAttackRelease("A4", "8n");
+// synth.triggerAttackRelease("D5", "8n");
+// synth.triggerAttackRelease("C5", "8n");
+// synth.triggerAttackRelease("B7", "8n");
+// synth.triggerAttackRelease("C5", "4n");
+// synth.triggerAttackRelease("A4", "4n");
+Tone.context.resume()
+  });
 
-function start() {
+// // the following crap is about Tone.js. It sucks
+// const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 
-    // get value from the input box
-    let s = document.getElementById('input1')
-    console.log(parseInt(s.value))
-    let l = document.getElementById('input2')
-    console.log(parseInt(l.value))
+// // //create a synth and connect it to the main output (your speakers)
+// // const synth = new Tone.Synth().toDestination();
+// // const now = Tone.now();
+// // synth.context.resume();
 
-    // get slices of nodes to play
-    let notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
-
-    makeNoteDivs(notes)
-
-    makeNotes(notes, parseInt(s.value), parseInt(l.value))
-
-} //start
-
-function makeNoteDivs(notes) {
-
-    //delete the existing notedivs
-    d3.selectAll('div.notediv').remove()
-
-    let breakele = document.createElement('br')
-    document.body.append(breakele)
-
-    lnotedivs = [], rnotedivs = []
-
-    let notelength = notes.length
-    console.log(notelength)
-    for (let z = 0; z <= notelength; z++) {
-        let tmpdiv = document.createElement('div')
-        tmpdiv.setAttribute('class', 'notediv')
-        tmpdiv.setAttribute('id', 'notediv_' + z)
-        bigdivl.appendChild(tmpdiv)
-        lnotedivs.push(tmpdiv)
-
-        tmpdiv = document.createElement('div')
-        tmpdiv.setAttribute('class', 'notediv')
-        tmpdiv.setAttribute('id', 'notediv_' + z)
-        bigdivr.appendChild(tmpdiv)
-        rnotedivs.push(tmpdiv)
-    }
-
-}// makenotedivs
+// Tone.start().then(d=>{
+//     // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+//     // const now = Tone.now();
+//     // synth.triggerAttack("D4", now);
+// //     // synth.triggerAttack("F4", now + 0.5);
+// //     // synth.triggerAttack("A4", now + 1);
+// //     // synth.triggerAttack("C5", now + 1.5);
+// //     // synth.triggerAttack("E5", now + 2);
+// //     // synth.triggerRelease(["D4", "F4", "A4", "C5", "E5"], now + 4);
+//     // synth.triggerRelease(now+1)
+//     // synth.triggerAttackRelease("C#4", "8n");
+//     // synth.context.resume()        
+// });
 
 
-async function makeNotes(notes, startpos, length) {
 
-    for (let i = 0; i < notes.length; i++) {
-        let thenote = notes[i]
-        // console.log(thenote)
-        // get the left hand note
-        let left = thenote.left
-        if (left) {
-            if (!left.finger) { left.finger = '' }
-            createNote(left.finger, left.staffpos, 'l', i) //the createNote should be able to descriminate left/right type (a.for define tones (); b. for determine the upper or lower row)
-        }
-        // get the righ hand note
-        let right = thenote.right
-        if (right) {
-            if (!right.finger) { right.finger = '' }
-            createNote(right.finger, right.staffpos, 'r', i)
-        } //if
-    }// for
-} //makeNotes
+(async () => {
 
+    await makeInputDoms()
+    await makeBigDivs()
+    await start()
 
-function createNote(finger, staffpos, hand, noteindex) {
+    await buildPianoWrappers()
 
+    // // build the initinal piano
+    await buildPianoKeys()
 
-    let letternumber = staffpositionToLetterNumber(staffpos, letternumber_for_staffposition1[hand])
-    // console.log(letternumber)
-
-    let letter = NumToToneLetter(letternumber, anchor_A, n_tone_letters)
-    // console.log(letter)
-
-    let imgsrcforpiano;
-
-    if (letter === 'C' || letter === 'D' || letter === 'E') {
-        imgsrcforpiano = 'img/Pianokey1.PNG'
-    } if (letter === 'F' || letter === 'G' || letter === 'A' || letter === 'B') {
-        imgsrcforpiano = 'img/Pianokey2.PNG'
-    }
-
-    let parent;
-    if (hand === 'l') {
-        parent = lnotedivs[noteindex]
-    } if (hand === 'r') {
-        parent = rnotedivs[noteindex]
-    }
-
-    // console.log(' =======================', noteindex, parent)
-
-    let overlaydivcontainer = adddiv(parent)
-    overlaydivcontainer.setAttribute('class', 'overlaycontain')
-
-    let overlaydiv = document.createElement('div')
-    overlaydivcontainer.appendChild(overlaydiv)
-    overlaydiv.setAttribute('class', 'overlay')
-    overlaydiv.style.display = 'block'
-
-    overlaydiv.innerHTML = letter + '<br/>' + finger
-
-    if (letter == 'C' || letter == 'F') {
-        overlaydivcontainer.style.paddingLeft = '1px'
-    } if (letter == 'E' || letter == 'A') {
-        overlaydivcontainer.style.paddingLeft = '34px'
-    } if (letter == 'B') {
-        overlaydivcontainer.style.paddingLeft = '51px'
-    }
-
-    // let divinside = document.createElement('div')
-    // overlaydiv.appendChild(divinside)
-    // divinside.setAttribute('class', 'text')
-    // divinside.innerText = letter
-
-    var pianoimg = document.createElement('IMG')
-    pianoimg.setAttribute('src', imgsrcforpiano);
-
-    if (hand === 'l') {
-        lnotedivs[noteindex].appendChild(pianoimg);
-    }
-    if (hand === 'r') {
-        rnotedivs[noteindex].appendChild(pianoimg);
-    }
-
-    pianoimg.style.height = '100px'
-    // pianoimg.style.position = 'absolute'
-
-    // clickbutton.onclick = null
+    //https://www.geeksforgeeks.org/how-to-detect-the-change-in-divs-dimension/
+    let resizeObserver = new ResizeObserver(async function () { // requires jquery
+        // console.log("The element was resized");
+        //remove the existing pianog
+        d3.selectAll('g.whitekeyg').remove()
+        d3.selectAll('g.blackkeyg').remove()
+        await buildPianoKeys() // the piano is resized as the wrapper size changes
+    });
+    resizeObserver.observe(d3.select('div#pianodiv').node());
 
 
-    function adddiv(parent) {
-        let div = document.createElement('div')
-        parent.appendChild(div)
-        return div
-    }
+    //play a middle 'C' for the duration of an 8th note
+    // trigger the attack immediately
+// synth.triggerAttack("C4", now)
+// // wait one second before triggering the release
+// synth.triggerRelease(now + 1)  
 
-} // createnotes
+})()
+
+
 
 
 

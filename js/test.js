@@ -1,40 +1,44 @@
 
-// (async () => {
+// https://stackoverflow.com/questions/50281568/audiocontext-not-allowed-to-start-in-tonejs-chrome
 
-//     // let pianoSynth =await Synth.createInstrument('piano');
+async function onKeyPress(ev) {
 
-// theletter, the section (octave number), and the length
-// pianoSynth.play('C#', 3, 3);
-let toneletter, octaveN;
-let semi = "", seconds = 5;
-// console.log(d3.selectAll('rect.keyrect'))
-d3.selectAll('rect.keyrect')
-    .on('click', function (ev) {
-        console.log(ev)
-        ev.preventDefault()
-        ev.stopPropagation()
+    let toneletter, octaveN;
+    let semi = "", seconds = 1;
 
-        console.log(ev)
-        let id = ev.target.id
-        let tonestr = id.substr(4, id.length)
-        console.log(id, tonestr.length)
-        if (tonestr.length === 2) {
-            toneletter = tonestr.substr(0, 1)
-            octaveN = tonestr.substr(1, 1)
-        } 
-        if (tonestr.length > 2){
-            toneletter = tonestr.substr(0,1)
-            semitoneletter = tonestr.substr(1,1)
-            if (semitoneletter === 's'){semi='#'}
-            octaveN = tonestr.substr(2,1)
-        } 
-        var key = toneletter + semi
-        console.log(key, octaveN, seconds)
+    // console.log(ev)
+    ev.preventDefault()
+    ev.stopPropagation()
 
-            let pianoSynth = Synth.createInstrument('piano');
-            console.log(key)
-            pianoSynth.play(key, parseInt(octaveN), seconds);
-    })
+    let id = ev.target.id
+    let tonestr = id.substr(4, id.length)
+    // console.log(id, tonestr.length)
+    if (tonestr.length === 2) {
+        toneletter = tonestr.substr(0, 1)
+        octaveN = tonestr.substr(1, 1)
+    }
+    if (tonestr.length > 2) {
+        toneletter = tonestr.substr(0, 1)
+        semitoneletter = tonestr.substr(1, 1)
+        if (semitoneletter === 's') { semi = '#' }
+        octaveN = tonestr.substr(2, 1)
+    }
+    var key = toneletter + semi
+    console.log('play sound', key, octaveN, seconds)
 
+    await playnote(toneletter, semi, octaveN, seconds)
 
-// })()
+} //onKeyPress
+
+async function playnote(toneletter, semi, octaveN, seconds) {
+    let keystr = toneletter + semi + octaveN;
+    // await synth.triggerAttack(keystr, now)
+    // // wait one second before triggering the release
+    // await synth.triggerRelease(now + seconds)
+    Tone.context.resume().then(() => {
+        synth.triggerAttackRelease(keystr, (1/seconds)*4 + 'n');
+        synth.context.resume()
+        Tone.context.resume()
+    });    
+    
+}

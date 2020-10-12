@@ -1,7 +1,8 @@
 // build a piano
 
-buildPianoWrappers()
-function buildPianoWrappers() {
+
+
+async function buildPianoWrappers() {
     let pianodiv_d3xn = d3.select('div#bigdiv').append('div')
         .attrs({ 'id': 'pianodiv', 'name': 'pianodiv' })
         .styles({ 'border': 'solid 1px', 'width': '100%', 'height': pianokeysize.fullscreen_whitekey.height, 'margin-top': '20px', 'float': 'left' })
@@ -11,21 +12,10 @@ function buildPianoWrappers() {
     let pianog_d3xn = pianosvg_d3xn.append('g').attrs({ 'id': 'pianog' })
 } //
 
-// build the initinal piano
-buildPianoKeys()
-
-//https://www.geeksforgeeks.org/how-to-detect-the-change-in-divs-dimension/
-let resizeObserver = new ResizeObserver(() => { // requires jquery
-    // console.log("The element was resized");
-    //remove the existing pianog
-    d3.selectAll('g.whitekeyg').remove()
-    d3.selectAll('g.blackkeyg').remove()
-    buildPianoKeys() // the piano is resized as the wrapper size changes
-});
-resizeObserver.observe(d3.select('div#pianodiv').node());
 
 
-function buildPianoKeys() {
+
+async function buildPianoKeys() {
     let pianog_d3xn = d3.select('g#pianog')
     // get the clientsize of the pianosvg
     let pianosvg_d3xn = d3.select('svg#pianosvg')
@@ -91,6 +81,10 @@ function buildPianoKeys() {
                 octaveN = parseInt((i - 2) / 7) + 1
             }
             return 'key_' + toneletter + octaveN
+        })
+        .on('click', async function (ev) {
+            // console.log(ev)
+            await onKeyPress(ev)
         })
 
     pianog_d3xn.selectAll('g.whitekeyg')
@@ -185,6 +179,10 @@ function addBlackKey(em, emi, width_whitekey, height_whitekey) {
         .styles({ 'width': width_blackkey + 'px', 'height': height_blackkey + 'px' })
         .attr('id', (d, i) => {
             return 'key_' + toneletter + 's' + octaveN
+        })
+        .on('click', async function (ev) {
+            // console.log(ev)
+            await onKeyPress(ev)
         })
 
     keyg
