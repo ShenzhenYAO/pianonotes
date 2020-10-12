@@ -21,6 +21,9 @@ function makeBigDivs() {
     const bigdivl = notediv.append('div')
         .attrs({ 'id': 'bigdivl', 'name': 'Left hand div' })
         .styles({ 'border': 'solid 1px', 'width': '100%', 'height': '150px', 'margin-top': '20px', 'float': 'left' })
+
+    
+    
 } // makeBigDivs
 
 function getNotesToDisplay(allnotes, startpos, length) {

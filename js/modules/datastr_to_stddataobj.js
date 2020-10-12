@@ -44,6 +44,6 @@ function datastr_to_stdobj(str) {
             notes.push(tmp)
         } // if d
     }) // forEach
-    console.log(notes)
+    // console.log(notes)
     return notes
 }

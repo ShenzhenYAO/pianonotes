@@ -8,11 +8,6 @@ var rnotedivs = []
 makeInputDoms()
 makeBigDivs()
 
-
-
-
-
-
 function start() {
 
     // get value from the input box
@@ -21,21 +16,16 @@ function start() {
     let l = document.getElementById('input2')
     console.log(parseInt(l.value))
 
+    // get slices of nodes to play
     let notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
 
-    // remove notedivs
-    let notedivs = document.getElementsByClassName('notediv')
-    for (let i = 0; i < notedivs.length; i++) {
-        // console.log(notedivs[i])
-        notedivs[i].remove();
-    }
+    makeNoteDivs(notes)
 
-    makenotedivs(notes)
     makeNotes(notes, parseInt(s.value), parseInt(l.value))
 
 } //start
 
-function makenotedivs(notes) {
+function makeNoteDivs(notes) {
 
     //delete the existing notedivs
     d3.selectAll('div.notediv').remove()
