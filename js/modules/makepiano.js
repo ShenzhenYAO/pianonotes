@@ -5,10 +5,11 @@
 async function buildPianoWrappers() {
     let pianodiv_d3xn = d3.select('div#bigdiv').append('div')
         .attrs({ 'id': 'pianodiv', 'name': 'pianodiv' })
-        .styles({ 'border': 'solid 1px', 'width': '100%', 'height': pianokeysize.fullscreen_whitekey.height, 'margin-top': '20px', 'float': 'left' })
+        .styles({ 'border': 'solid 0px', 'width': '100%', 
+                'height': pianokeysize.fullscreen_whitekey.height, 'margin-top': '200px', 'float': 'left'})
 
     let pianosvg_d3xn = pianodiv_d3xn.append('svg').attrs({ 'id': 'pianosvg' })
-        .styles({ 'height': '100%', 'width': '100%', 'background-color': 'lightyellow' })
+        .styles({ 'height': '100%', 'width': '100%', 'background-color': 'white' })
     let pianog_d3xn = pianosvg_d3xn.append('g').attrs({ 'id': 'pianog' })
 } //
 
@@ -131,7 +132,7 @@ async function buildPianoKeys() {
         // get the key letter embedded in the id (the id is lke keyg_A0)
         let toneletter = keygidstr.substr(5, 1)
         if (!(['B', 'E'].includes(toneletter) || keygidstr === 'keyg_C8')) {
-            addBlackKey(em, emi, width_whitekey, height_whitekey)
+            addBlackKey_wholepiano(em, emi, width_whitekey, height_whitekey)
         }
     }) // forEach white key em (rect)
 
@@ -142,7 +143,7 @@ async function buildPianoKeys() {
 
 
 // build a piano key (a rect) 
-function addBlackKey(em, emi, width_whitekey, height_whitekey) {
+function addBlackKey_wholepiano(em, emi, width_whitekey, height_whitekey) {
     // console.log(height_whitekey)
     // console.log(pianokeysize.black.length)
     // console.log(pianokeysize.fullscreen_whitekey.height)

@@ -1,6 +1,6 @@
 const letternumber_for_staffposition1 = {
-    l: 71, 
-    r: 69 
+    l: 71,
+    r: 69
 };
 
 const anchor_A = 65;
@@ -9,23 +9,29 @@ const n_tone_letters = 7;
 
 // standard of a pianokey (measures in mm)
 //https://www.reddit.com/r/piano/comments/wkofm/what_are_the_dimension_of_the_piano_keys/
-const pianokeysize= {
-    white:{width: 23.5, length: 140},
-    black:{width: 13.7, length:100},
-    fullscreen_whitekey:{width: 20, height:150} // in full screen the white key width is about 20px. This is used to reset font size
+const pianokeysize = {
+    white: { width: 23.5, length: 140 },
+    black: { width: 13.7, length: 100 },
+    fullscreen_whitekey: { width: 20, height: 150 } // in full screen the white key width is about 20px. This is used to reset font size
 }
-const pianokeydata={
-    stdrectattrs:{'class':'keyrect', 'stroke':'black','stroke-width':1},
-    stdtextattrs:{
-        white: {'fill':'black', 'font-family':'sans-serif', 'font-size':10, 'font-weight':'bold','text-align':'center'},
-        black: {'fill':'white', 'font-family':'sans-serif', 'font-size':10, 'font-weight':'bold','text-align':'left', 'padding':'0'}
+const pianokeydata = {
+    stdrectattrs: { 'class': 'keyrect', 'stroke': 'black', 'stroke-width': 1 },
+    stdtextattrs: {
+        white: { 'fill': 'black', 'font-family': 'sans-serif', 'font-size': 10, 'font-weight': 'bold', 'text-align': 'center' },
+        black: { 'fill': 'white', 'font-family': 'sans-serif', 'font-size': 10, 'font-weight': 'bold', 'text-align': 'left', 'padding': '0' }
     }
-    
+
 } //pianokeydata
 
 const maxnotedivs = 16;
 
-const notedivdata =  {
+const notedivdata = {
     maxwidth: 100,
-    stdstyles:{'border': 'solid 1px', 'float':'left'}
+    stdstyles: { 'border': 'none', 'float': 'left', 'margin-left':'20px' }
+} // notedivdata
+
+const notekeydata = {
+    pressedcolor:'lightgrey' ,
+    white: { stdattrs: { 'class': 'notewhitekeyrect', 'stroke': 'black', 'stroke-width': 1, 'width': '4', 'height': '4', 'fill': 'white' } },
+    black: { stdattrs: { 'class': 'noteblackkeyrect', 'stroke': 'black', 'stroke-width': 1, 'width': '4', 'height': '4', 'fill': 'grey' } }
 }

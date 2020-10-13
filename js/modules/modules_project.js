@@ -3,9 +3,9 @@ async function makeInputDoms() {
     let inputdiv_d3xn = d3.select('body').append('div').attr('id', 'inputdiv').attr('class', 'inputdivs')
 
     inputdiv_d3xn.append('div').text('start from').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', 38)
+    inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', 18)
     inputdiv_d3xn.append('div').text('number of notes').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', 16)
+    inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', 10)
     inputdiv_d3xn.append('div').attr('class', 'inputdivs')
     inputdiv_d3xn.append('button').text('make notes').on('click', async function (){ await start(allnotes)}).attr('class', 'inputdivs')
 
@@ -18,10 +18,10 @@ async function makeBigDivs() {
         .styles({ 'width': '100%' })
     const bigdivr = notediv.append('div')
         .attrs({ 'id': 'bigdivr', 'name': 'Right hand div' })
-        .styles({ 'border': 'solid 1px', 'width': '100%', 'height': '150px', 'margin-top': '20px', 'float': 'left' })
+        .styles({ 'border': 'solid 0px', 'width': '100%', 'height': '150px', 'margin-top': '20px', 'float': 'left' })
     const bigdivl = notediv.append('div')
         .attrs({ 'id': 'bigdivl', 'name': 'Left hand div' })
-        .styles({ 'border': 'solid 1px', 'width': '100%', 'height': '150px', 'margin-top': '20px', 'float': 'left' })
+        .styles({ 'border': 'solid 0px', 'width': '100%', 'height': '150px', 'margin-top': '20px', 'float': 'left' })
     
 } // makeBigDivs
 
@@ -44,12 +44,9 @@ async function start() {
     // get slices of nodes to play
     notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
 
-    return 
+     
     // make note divs
     await makeNoteDivs(notes)
-
-    // mke notes
-    await makeNotes(notes, parseInt(s.value), parseInt(l.value))
 
 } //start
 
