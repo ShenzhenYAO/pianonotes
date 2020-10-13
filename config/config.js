@@ -22,3 +22,10 @@ const pianokeydata={
     }
     
 } //pianokeydata
+
+const maxnotedivs = 16;
+
+const notedivdata =  {
+    maxwidth: 100,
+    stdstyles:{'border': 'solid 1px', 'float':'left'}
+}

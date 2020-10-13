@@ -2,20 +2,34 @@
 
 var lnotedivs = [], tmpdiv = undefined;
 var rnotedivs = [];
-var allnotes = datastr_to_stdobj(notesStr);
-;
-console.log(allnotes)
+let note_stdobj = datastr_to_stdobj(notesStr);
+// console.log(note_stdobj)
+var allnotes = getMusicNotes(note_stdobj);
+// console.log(allnotes);
+
+var notes;
+
 //https://tonejs.github.io/
-const synth = new Tone.PolySynth(Tone.Synth).toDestination();
-
-
+// const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 
 
 (async () => {
 
     await makeInputDoms()
     await makeBigDivs()
-    await start()
+
+    // get value from the input box
+    let s = document.getElementById('input1')
+    // console.log(parseInt(s.value))
+    let l = document.getElementById('input2')
+    // console.log(parseInt(l.value))
+
+    // get slices of nodes to play
+    notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
+
+    await makeNoteDivs(notes)
+
+
 
     await buildPianoWrappers()
 
@@ -29,8 +43,12 @@ const synth = new Tone.PolySynth(Tone.Synth).toDestination();
         d3.selectAll('g.whitekeyg').remove()
         d3.selectAll('g.blackkeyg').remove()
         await buildPianoKeys() // the piano is resized as the wrapper size changes
+        // await makeNoteDivs(notes)
+        
     });
     resizeObserver.observe(d3.select('div#pianodiv').node());
+
+
 
 
     //play a middle 'C' for the duration of an 8th note

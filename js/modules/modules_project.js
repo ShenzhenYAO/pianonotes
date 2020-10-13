@@ -3,9 +3,9 @@ async function makeInputDoms() {
     let inputdiv_d3xn = d3.select('body').append('div').attr('id', 'inputdiv').attr('class', 'inputdivs')
 
     inputdiv_d3xn.append('div').text('start from').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', allnotes.length -5)
+    inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', 38)
     inputdiv_d3xn.append('div').text('number of notes').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', allnotes.length)
+    inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', 16)
     inputdiv_d3xn.append('div').attr('class', 'inputdivs')
     inputdiv_d3xn.append('button').text('make notes').on('click', async function (){ await start(allnotes)}).attr('class', 'inputdivs')
 
@@ -42,8 +42,9 @@ async function start() {
     // console.log(parseInt(l.value))
 
     // get slices of nodes to play
-    let notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
+    notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
 
+    return 
     // make note divs
     await makeNoteDivs(notes)
 
@@ -53,38 +54,10 @@ async function start() {
 } //start
 
 
-// make a collection of note divs, each for a note, save to collections (lnotedivs) and rnotedivs
-async function makeNoteDivs(notes) {
-
-    //delete the existing notedivs
-    d3.selectAll('div.notediv').remove()
-
-    let breakele = document.createElement('br')
-    document.body.append(breakele)
-
-    let notelength = notes.length
-
-    for (let z = 0; z <= notelength; z++) {
-        let tmpdiv = document.createElement('div')
-        tmpdiv.setAttribute('class', 'notediv')
-        tmpdiv.setAttribute('id', 'notediv_' + z)
-        bigdivl.appendChild(tmpdiv)
-        lnotedivs.push(tmpdiv)
-
-        tmpdiv = document.createElement('div')
-        tmpdiv.setAttribute('class', 'notediv')
-        tmpdiv.setAttribute('id', 'notediv_' + z)
-        bigdivr.appendChild(tmpdiv)
-        rnotedivs.push(tmpdiv)
-    }
-
-    // console.log (lnotedivs , rnotedivs)
-
-}// makenotedivs
 
 
 async function makeNotes(notes, startpos, length) {
-
+    // loop for each note
     for (let i = 0; i < notes.length; i++) {
         let thenote = notes[i]
         // console.log(thenote)

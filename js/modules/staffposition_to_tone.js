@@ -7,6 +7,46 @@
  * 
  */
 
+// input: a set of notes data in standard data object; output: a set of notes with tone info (letter, semi or sharp/flat, and octaveN for piano)
+function getMusicNotes(d) {
+    // console.log(d)
+    d.forEach(clefs => {
+        // console.log(clefs)
+        let cleftkeys = Object.keys(clefs)
+        cleftkeys.forEach(f => {
+            // console.log(f)
+            let notes = clefs[f]
+            notes.forEach(g => {
+                let staffpos = g.staffpos
+                // console.log(staffpos)
+                let ln_staffposition1;
+                if (f === 'right') { ln_staffposition1 = letternumber_for_staffposition1.r }
+                else { ln_staffposition1 = letternumber_for_staffposition1.l }
+                let letternum = staffpositionToLetterNumber(staffpos, ln_staffposition1)
+                // console.log(letternum)
+                let toneletter = NumToToneLetter(letternum, anchor_A, n_tone_letters)
+                // console.log(toneletter)
+                // need to calculate the octave number
+                // for right hand, for C4 the letternum is 67
+                let octaveN, semi ='';
+                if (g.semi) {semi =g.semi}
+                if (f === 'right') {  octaveN = parseInt((letternum - 67) / 7) + 4 }
+                else { octaveN = parseInt((letternum - 67) / 7) + 2}
+                // console.log("octaveN:", octaveN)
+                g.tone = toneletter + semi + octaveN
+                g.letternum = letternum
+                // console.log(g)
+            })// note for each
+
+            // console.log(staffpos)
+        }) // left/right clef
+    })// moment for each
+
+    return d
+
+}// getMusicNotes
+
+
 function staffpositionToLetterNumber(staffposition, letternumber_for_staffposition1) {
     // skip is the number of letters to skip .
     // e.g., if the staffposition is 2.5 (the second space above the staff line 1), 
