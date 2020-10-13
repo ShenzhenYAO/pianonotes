@@ -14,7 +14,7 @@ async function makeNoteDivs(notes) {
     let n_divs = Math.min(notes.length, maxnotedivs)
 
     let displaynotes = notes.splice(0, n_divs)
-    console.log(displaynotes)
+    // console.log(displaynotes)
     // width of the notediv
     let width_notediv = Math.min(notedivdata.maxwidth, bdivsize.width / n_divs)
 
@@ -204,7 +204,7 @@ function addABlackKey(notegdom, whitekeyindex, thiswhitekeygdom) {
             let theblackkeytone = presskeydata.tone
             // console.log(theToneToPlay)
             if (theToneToPlay === theblackkeytone.sharp || theToneToPlay === theblackkeytone.flat) {
-                console.log(theblackkeytone, theToneToPlay)
+                // console.log(theblackkeytone, theToneToPlay)
                 theblackkey.attr('press', 1) // for whitekeys, the .press and .data is saved in rect's binding data
                 // for black keys, so far save it as rect dom attrs .press =1, and .data = stringify(f)
                 theblackkey.attr('data', JSON.stringify(f))
