@@ -8,7 +8,8 @@ async function makeNoteDivs(notes) {
     // determin the number of divs to display
     let bigdivl = d3.select('div#bigdivl')
     let bigdivr = d3.select('div#bigdivr')
-    bdivsize = bigdivl.node().getBoundingClientRect()
+    // bdivsize = bigdivl.node().getBoundingClientRect() 
+    let bdivsize = { width: $(bigdivl.node()).width(), height: $(bigdivl.node()).height() }
 
     // determine the number of divs (max 15)
     let n_divs = Math.min(notes.length, maxnotedivs)
@@ -129,8 +130,21 @@ function addABlackKey(notegdom, whitekeyindex, thiswhitekeygdom) {
     // make an empty data, and link it to the blackg
     let theblackkeyg = noteg_d3xn.append('g').attr('class', 'noteblackkeyg')
     let theblackkey = theblackkeyg.append('rect').attrs(notekeydata.black.stdattrs)
+
     //determine its width, which is a black key's standard width in raito of acutal white key width / stand white keywidth 
-    let width_whitenotekey = thiswhitekeygdom.getBoundingClientRect().width
+    // let width_whitenotekey = thiswhitekeygdom.getBoundingClientRect().width
+
+    // do not use .getBoundingClientRect() as it is not recognized by Safari
+    // instead, use jquery .width(). However, it works for divs/svgs, not  gs
+    // so, get the notesvg's width
+    // then divided by the number of whitekeys to get width of individual white key!
+    let width_notesvg = $(notegdom.parentNode).width()
+    // count the whitekeygs within the notegdom
+    let theWhiteKeys_length = d3.select(notegdom).selectAll('g.notewhitekeyg').nodes().length
+    // console.log(width_notesvg, theWhiteKeys.length)
+    let width_whitenotekey = width_notesvg / theWhiteKeys_length
+
+
     let width_blacknotekey = pianokeysize.black.width * width_whitenotekey / pianokeysize.white.width
     let height_blacknotekey = pianokeysize.black.length * width_blacknotekey / pianokeysize.black.width
 
@@ -224,7 +238,13 @@ function addnoteWhitekeys(theWhiteKeys, em) {
         .attr('width', () => {
             // the width of the notesvg *90% / the number of whitekeys
             // get the width of the notesvg
-            let size_thenotesvg_dom = em.parentNode.getBoundingClientRect()
+
+            // let size_thenotesvg_dom = em.parentNode.getBoundingClientRect()
+
+            // do not use .getBoundingClientRect() as it is not recognized by Safari
+            // instead, use jquery .width(). Note, it works for divs/svgs but not gs
+            let size_thenotesvg_dom = { width: $(em.parentNode).width(), height: $(em.parentNode).height() }
+
             // get its size
             let width_noteg = size_thenotesvg_dom.width
             let width_whitenotekey = width_noteg / theWhiteKeys.length
@@ -233,8 +253,20 @@ function addnoteWhitekeys(theWhiteKeys, em) {
         })
         .attr('height', (d, i, elm) => {
             let thisdom = elm[i]
+
             // get the width of the key
-            let width_whitenotekey = thisdom.getBoundingClientRect().width
+
+            // let width_whitenotekey = thisdom.getBoundingClientRect().width
+
+            // do not use .getBoundingClientRect() as it is not recognized by Safari
+            // instead, use jquery .width(). However, it works for divs/svgs, not  gs
+            // so, get the notesvg's width
+            // then divided by the number of whitekeys to get width of individual white key!
+            let width_notesvg = $(em.parentNode).width()
+            // console.log(width_notesvg, theWhiteKeys.length)
+            let width_whitenotekey = width_notesvg / theWhiteKeys.length
+
+
             // console.log(width_whitenotekey)
             let height_whitenoteky = pianokeysize.white.length * width_whitenotekey / pianokeysize.white.width
             // console.log(width_whitenotekey, height_whitenoteky)
@@ -244,7 +276,20 @@ function addnoteWhitekeys(theWhiteKeys, em) {
             let thisdom = elm[i]
             // get the width of the key (must calculate based on the notesvg's size)
             // get the width of the key
-            let width_whitenotekey = thisdom.getBoundingClientRect().width
+
+
+            // let width_whitenotekey = thisdom.getBoundingClientRect().width
+
+            // do not use .getBoundingClientRect() as it is not recognized by Safari
+            // instead, use jquery .width(). However, it works for divs/svgs, not  gs
+            // so, get the notesvg's width
+            // then divided by the number of whitekeys to get width of individual white key!
+            let width_notesvg = $(em.parentNode).width()
+            // console.log(width_notesvg, theWhiteKeys.length)
+            let width_whitenotekey = width_notesvg / theWhiteKeys.length
+
+
+            // let width_whitenotekey =  $(thisdom).width()
             let x = width_whitenotekey * i
 
             let translateStr = 'translate(' + x + ', 0)'
@@ -265,8 +310,21 @@ function addnoteWhitekeys(theWhiteKeys, em) {
 
             // get height of the rect
             let whitekeyg = elm[i].parentNode
-            let width_whitenotekey = whitekeyg.getBoundingClientRect().width
-            let height_whitenotekey = whitekeyg.getBoundingClientRect().height
+            // let width_whitenotekey = whitekeyg.getBoundingClientRect().width 
+
+            // do not use .getBoundingClientRect() as it is not recognized by Safari
+            // instead, use jquery .width(). Note, it works for divs/svgs
+            let width_notesvg = $(em.parentNode).width()
+            // console.log(width_notesvg, theWhiteKeys.length)
+            let width_whitenotekey = width_notesvg / theWhiteKeys.length
+
+            // let height_whitenotekey = whitekeyg.getBoundingClientRect().height
+            // do not use .getBoundingClientRect() as it is not recognized by Safari
+            // Note, the white key height is not the same as the notesvg height (the svg is bigger)
+            // use the standard key ratio (length/width) to determine the whitenotekey's height
+            let height_whitenotekey = width_whitenotekey * pianokeysize.white.length / pianokeysize.white.width
+
+
             // console.log(height_whitenotekey)
             let x = width_whitenotekey / 8 + width_whitenotekey * i
             let y = height_whitenotekey * 7 / 8
@@ -282,8 +340,21 @@ function addnoteWhitekeys(theWhiteKeys, em) {
 
             // get height of the rect
             let whitekeyg = elm[i].parentNode
-            let width_whitenotekey = whitekeyg.getBoundingClientRect().width
-            let height_whitenotekey = whitekeyg.getBoundingClientRect().height
+            // let width_whitenotekey = whitekeyg.getBoundingClientRect().width
+            // let height_whitenotekey = whitekeyg.getBoundingClientRect().height
+
+            // do not use .getBoundingClientRect() as it is not recognized by Safari
+            // instead, use jquery .width(). Note, it works for divs/svgs
+            let width_notesvg = $(em.parentNode).width()
+            // console.log(width_notesvg, theWhiteKeys.length)
+            let width_whitenotekey = width_notesvg / theWhiteKeys.length
+
+            // let height_whitenotekey = whitekeyg.getBoundingClientRect().height
+            // do not use .getBoundingClientRect() as it is not recognized by Safari
+            // Note, the white key height is not the same as the notesvg height (the svg is bigger)
+            // use the standard key ratio (length/width) to determine the whitenotekey's height
+            let height_whitenotekey = width_whitenotekey * pianokeysize.white.length / pianokeysize.white.width
+
             // console.log(height_whitenotekey)
             let x = width_whitenotekey / 8 + width_whitenotekey * i
             let y = height_whitenotekey * 1.1
