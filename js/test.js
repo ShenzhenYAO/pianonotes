@@ -1,10 +1,4 @@
 async function test1(){
+//https://github.com/nbrosowsky/tonejs-instruments
 
-    // let a =d3.select('svg.notesvg').node()
-
-    // console.log(a)
-    
-    // let b =$('svg.notesvg')[0]
-    // console.log($(b).offset())
-    // console.log($(b).width())
 }//
