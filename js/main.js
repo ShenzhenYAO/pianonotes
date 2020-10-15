@@ -28,24 +28,24 @@ var notes;
     // get slices of nodes to play
     notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
 
-    // await makeNoteDivs(notes)
+    await makeNoteDivs(notes)
 
     await buildPianoWrappers()
 
     // // build the initinal piano
     await buildPianoKeys()
 
-    //https://www.geeksforgeeks.org/how-to-detect-the-change-in-divs-dimension/
-    let resizeObserver = new ResizeObserver(async function () { // requires jquery
-        // console.log("The element was resized");
-        //remove the existing pianog
-        d3.selectAll('g.whitekeyg').remove()
-        d3.selectAll('g.blackkeyg').remove()
-        await buildPianoKeys() // the piano is resized as the wrapper size changes
-        // await makeNoteDivs(notes)
+    // //https://www.geeksforgeeks.org/how-to-detect-the-change-in-divs-dimension/
+    // let resizeObserver = new ResizeObserver(async function () { // requires jquery
+    //     // console.log("The element was resized");
+    //     //remove the existing pianog
+    //     d3.selectAll('g.whitekeyg').remove()
+    //     d3.selectAll('g.blackkeyg').remove()
+    //     await buildPianoKeys() // the piano is resized as the wrapper size changes
+    //     // await makeNoteDivs(notes)
         
-    });
-    resizeObserver.observe(d3.select('div#pianodiv').node());
+    // });
+    // resizeObserver.observe(d3.select('div#pianodiv').node());
 
         await test1()
 //   // play a middle 'C' for the duration of an 8th note
