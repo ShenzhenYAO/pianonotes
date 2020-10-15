@@ -40,6 +40,7 @@ async function addMomentUnits(displaynotes) {
     // //  we cannot use a moment svg directly, as svg itself cannot be move by transfomr-translate unless it is within a div
     // // the reason to use an svg is that it acts as a window, so the g element within can be flexible (bigger than the svg, yet only disply the part within the svg)
     let momentdivsR = momentg.append('foreignObject')
+        .attrs({ 'width': momentdivdata.maxwidth , 'height': momentdivdata.maxwidth * 1.5 }) // attr w/h are for the stupid Safari
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
         .append('xhtml:div')
         .styles(momentdivdata.stdstyles)
