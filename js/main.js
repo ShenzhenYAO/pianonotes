@@ -18,6 +18,8 @@ var notes;
 
     // await makeInputDoms()
     await makeBigDivs()
+    let astr='makeBigDivs() run successfully'
+    d3.select('div#statusdiv').html(astr)
 
     // // get value from the input box
     // let s = document.getElementById('input1')
@@ -25,13 +27,9 @@ var notes;
     // let l = document.getElementById('input2')
     // // console.log(parseInt(l.value))
 
-    let astr='makeBigDivs() run successfully'
-    d3.select('div#statusdiv').html(astr)
-
     // get slices of nodes to play
     // notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
     notes = getNotesToDisplay(allnotes, 0, allnotes.length)
-
     astr= astr + '<br/>'+'getNotesToDisplay() run successfully'
     d3.select('div#statusdiv').html(astr)
 

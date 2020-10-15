@@ -28,7 +28,7 @@ const maxnotedivs = 10000;
 const momentdivdata = {
     maxwidth: 100,
     maxheight: 150,
-    stdstyles: { 'border': 'solid 0px', 'background-color': 'white'  }
+    stdstyles: { 'border': 'solid 0px', 'background-color': 'yellow'  }
 } // notedivdata
 
 const notekeydata = {

@@ -3,8 +3,7 @@
 async function makeNoteDivs(notes) {
 
     //delete the existing notedivs
-    d3.selectAll('div.notediv').remove()
-
+    d3.selectAll('g.momentg').remove()
 
     // determine the number of divs (max 15)
     let n_divs = notes.length
@@ -49,7 +48,8 @@ async function addMomentUnits(displaynotes) {
         .styles(momentdivdata.stdstyles)
         .attrs({'class': 'momentdivL', 'clef':'left'})
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
- 
+
+    return
 
     // add a set of moment svgs for the right hand icons
     let momentsvgR = momentdivsR.append('svg').attrs({'class': 'momentsvgR', 'clef':'right'}).styles({ "width": momentdivdata.maxwidth, 'height': momentdivdata.maxwidth*1.5, 'background-color': 'white' })
@@ -183,7 +183,6 @@ function addABlackKey(notegdom, whitekeyindex, thiswhitekeygdom) {
         // console.log(d3.select(thiswhitekeygdom))
         let x, thisblackkeyTone
         if (whitekeyindex < 0) {
-
             // it is the flat tone of the curent white key
             let thiswhitekeyTone = d3.select(thiswhitekeygdom).datum().key
             let thisblackkeyFlatTone = thiswhitekeyTone.substr(0, 1) + "b" + thiswhitekeyTone.substr(1, 1)
