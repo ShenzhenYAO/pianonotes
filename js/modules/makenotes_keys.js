@@ -45,7 +45,7 @@ async function addMomentUnits(displaynotes) {
         .styles(momentdivdata.stdstyles)
         .attrs({'class':'momentdivR',  'clef':'right'})
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
- 
+        .text('right')
     let momentdivsL = momentg.append('foreignObject')
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
         .attr('transform', 'translate(0, 200)')
@@ -53,7 +53,7 @@ async function addMomentUnits(displaynotes) {
         .styles(momentdivdata.stdstyles)
         .attrs({'class': 'momentdivL', 'clef':'left'})
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
-    
+        .text('left')
         console.log(d3.selectAll("div.momentdivR").nodes().length)
         astr = astr + '<br/>' + 'div.momentdivR ' +  d3.selectAll("div.momentdivR").style('width')
         statusdiv.html(astr)

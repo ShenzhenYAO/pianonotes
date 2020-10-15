@@ -27,13 +27,7 @@ async function makeBigDivs() {
         .styles({ 'width': '100%' })
     const bigsvg = bigdiv.append('svg').styles({'width': '100%', 'height':'100%', 'border':'solid'})
     const bigg = bigsvg.append('g')
-    const bigdivr = bigg.append('svg')
-        .attrs({ 'id': 'bigdivr', 'name': 'Right hand div' })
-        .styles({ 'border': 'solid 0px', 'width': '100%', 'height': '150px', 'margin-top': '20px', 'float': 'left' })
-    const bigdivl = bigg.append('svg')
-        .attrs({ 'id': 'bigdivl', 'name': 'Left hand div' })
-        .styles({ 'border': 'solid 0px', 'width': '100%', 'height': '150px', 'margin-top': '20px', 'float': 'left' })
-    
+
 } // makeBigDivs
 
 function getNotesToDisplay(allnotes, startpos, length) {
