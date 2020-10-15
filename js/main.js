@@ -32,7 +32,7 @@ var astr
 
     // get slices of nodes to play
     // notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
-    notes = getNotesToDisplay(allnotes, 0, allnotes.length)
+    notes = getNotesToDisplay(allnotes, 0, 1)// allnotes.length)
     astr= astr + '<br/>'+'getNotesToDisplay() run successfully' + allnotes.length
     d3.select('div#statusdiv').html(astr)
 
