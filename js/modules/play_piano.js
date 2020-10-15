@@ -4,7 +4,8 @@ const quarternotesperminute = 76*2
 
 // const synth = new Tone.Synth().toDestination(); // when play samples, do not need to load Synth or polySynth
 
-d3.select('div#bigdiv').append('button').text('play the sound').on('click', async function () {
+d3.select('div#bigdiv').append('button').text('play the song').styles({'margin-top': '30px'})
+    .on('click', async function () {
 
     //https://tonejs.github.io/
     // const synth = new Tone.PolySynth(Tone.Synth).toDestination();

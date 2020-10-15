@@ -29,9 +29,9 @@ async function addMomentUnits(displaynotes) {
             return translateStr
         })
 
-    console.log(d3.selectAll("g.momentg").nodes().length)
-    astr = astr + '<br/>' + 'g.momentg ' + d3.select(d3.selectAll("g.momentg").nodes()[1]).attr('transform')
-    statusdiv.html(astr)
+    // console.log(d3.selectAll("g.momentg").nodes().length)
+    // astr = astr + '<br/>' + 'g.momentg ' + d3.select(d3.selectAll("g.momentg").nodes()[1]).attr('transform')
+    // statusdiv.html(astr)
 
     // the g.moments are moved horizontally according to the order of the displaynote moments
 
@@ -54,12 +54,12 @@ async function addMomentUnits(displaynotes) {
         .styles(momentdivdata.stdstyles)
         .attrs({ 'class': 'momentdivL', 'clef': 'left' })
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
-    console.log(d3.selectAll("div.momentdivR").nodes().length)
-    astr = astr + '<br/>' + 'div.momentdivR ' + d3.selectAll("div.momentdivR").style('width')
-    statusdiv.html(astr)
-    console.log(d3.selectAll("div.momentdivL").nodes().length)
-    astr = astr + '<br/>' + 'div.momentdivL ' + d3.selectAll("div.momentdivL").style('background-color')
-    statusdiv.html(astr)
+    // console.log(d3.selectAll("div.momentdivR").nodes().length)
+    // astr = astr + '<br/>' + 'div.momentdivR ' + d3.selectAll("div.momentdivR").style('width')
+    // statusdiv.html(astr)
+    // console.log(d3.selectAll("div.momentdivL").nodes().length)
+    // astr = astr + '<br/>' + 'div.momentdivL ' + d3.selectAll("div.momentdivL").style('background-color')
+    // statusdiv.html(astr)
 
     // add a set of moment svgs for the right hand icons
     let momentsvgR = momentdivsR.append('svg').attrs({ 'class': 'momentsvgR', 'clef': 'right' }).styles({ "width": momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5, 'background-color': 'white' })
