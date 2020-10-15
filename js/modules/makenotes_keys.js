@@ -29,10 +29,10 @@ async function addMomentUnits(displaynotes) {
             return translateStr
         })
 
-        console.log(d3.selectAll("g.momentg").nodes().length)
-        astr = astr + '<br/>' + 'g.momentg ' +  d3.select(d3.selectAll("g.momentg").nodes()[1]).attr('transform')
-        statusdiv.html(astr)
-        
+    console.log(d3.selectAll("g.momentg").nodes().length)
+    astr = astr + '<br/>' + 'g.momentg ' + d3.select(d3.selectAll("g.momentg").nodes()[1]).attr('transform')
+    statusdiv.html(astr)
+
     // the g.moments are moved horizontally according to the order of the displaynote moments
 
     // // within this momentg, add moment divs for the icons, these divs come in pairs, one for right, one for left
@@ -40,38 +40,35 @@ async function addMomentUnits(displaynotes) {
     // //  we cannot use a moment svg directly, as svg itself cannot be move by transfomr-translate unless it is within a div
     // // the reason to use an svg is that it acts as a window, so the g element within can be flexible (bigger than the svg, yet only disply the part within the svg)
     let momentdivsR = momentg.append('foreignObject')
-        .attrs({ 'width': momentdivdata.maxwidth , 'height': momentdivdata.maxwidth * 1.5 }) // attr w/h are for the stupid Safari
+        .attrs({ 'width': momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5 }) // attr w/h are for the stupid Safari
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
         .append('xhtml:div')
         .styles(momentdivdata.stdstyles)
-        .attrs({'class':'momentdivR',  'clef':'right'})
+        .attrs({ 'class': 'momentdivR', 'clef': 'right' })
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
-        .text('right')
     let momentdivsL = momentg.append('foreignObject')
+        .attrs({ 'width': momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5 })
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
-        .attr('transform', 'translate(0, 200)')
+        .attr('transform', 'translate(0, 200)') // move down for 200 px
         .append('xhtml:div')
         .styles(momentdivdata.stdstyles)
-        .attrs({'class': 'momentdivL', 'clef':'left'})
+        .attrs({ 'class': 'momentdivL', 'clef': 'left' })
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
-        .text('left')
-        console.log(d3.selectAll("div.momentdivR").nodes().length)
-        astr = astr + '<br/>' + 'div.momentdivR ' +  d3.selectAll("div.momentdivR").style('width')
-        statusdiv.html(astr)
-        console.log(d3.selectAll("div.momentdivL").nodes().length)
-        astr = astr + '<br/>' + 'div.momentdivL ' +  d3.selectAll("div.momentdivL").style('background-color')
-        statusdiv.html(astr)
-
-    return
+    console.log(d3.selectAll("div.momentdivR").nodes().length)
+    astr = astr + '<br/>' + 'div.momentdivR ' + d3.selectAll("div.momentdivR").style('width')
+    statusdiv.html(astr)
+    console.log(d3.selectAll("div.momentdivL").nodes().length)
+    astr = astr + '<br/>' + 'div.momentdivL ' + d3.selectAll("div.momentdivL").style('background-color')
+    statusdiv.html(astr)
 
     // add a set of moment svgs for the right hand icons
-    let momentsvgR = momentdivsR.append('svg').attrs({'class': 'momentsvgR', 'clef':'right'}).styles({ "width": momentdivdata.maxwidth, 'height': momentdivdata.maxwidth*1.5, 'background-color': 'white' })
-    let inner_momentgR = momentsvgR.append('g').attrs({'class': 'inner_momentgR', 'clef':'right'})
+    let momentsvgR = momentdivsR.append('svg').attrs({ 'class': 'momentsvgR', 'clef': 'right' }).styles({ "width": momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5, 'background-color': 'white' })
+    let inner_momentgR = momentsvgR.append('g').attrs({ 'class': 'inner_momentgR', 'clef': 'right' })
 
 
     // add a set of svgs for the left hand icons
-    let momentsvgL = momentdivsL.append('svg').attrs({'class': 'momentsvgL', 'clef':'left'}).styles({ "width": momentdivdata.maxwidth, 'height': momentdivdata.maxwidth*1.5, 'background-color': 'white' })
-    let inner_momentgL = momentsvgL.append('g').attrs({'class': 'inner_momentgL',  'clef':'left'})
+    let momentsvgL = momentdivsL.append('svg').attrs({ 'class': 'momentsvgL', 'clef': 'left' }).styles({ "width": momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5, 'background-color': 'white' })
+    let inner_momentgL = momentsvgL.append('g').attrs({ 'class': 'inner_momentgL', 'clef': 'left' })
 
     // add piano keys!
     let keysR = inner_momentgR.attr('whatever', (d, i, em) => {
