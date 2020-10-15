@@ -2,7 +2,11 @@
 
 var lnotedivs = [], tmpdiv = undefined;
 var rnotedivs = [];
-let note_stdobj = datastr_to_stdobj(notesStr);
+// let note_stdobj = datastr_to_stdobj(notesStr);
+let note_stdobj = datastr_to_stdobj(notesStr_lb);
+
+
+
 // console.log(note_stdobj)
 
 var allnotes = getMusicNotes(note_stdobj);

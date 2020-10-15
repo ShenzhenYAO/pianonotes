@@ -1,6 +1,6 @@
 // https://tonejs.github.io/
 
-const quarternotesperminute = 76*2
+const quarternotesperminute = 105 //76 * 1.5
 
 // const synth = new Tone.Synth().toDestination(); // when play samples, do not need to load Synth or polySynth
 
@@ -45,7 +45,24 @@ d3.select('div#bigdiv').append('button').text('play the song').styles({'margin-t
 
     let urls = ['whatever']
     let baseUrl = 'data/instruments/piano/'
-    myPlayPolySample3(urls, baseUrl, notesToPlay)
+    let samples = {
+        "C4": "C4.mp3",
+        "D#4": "Ds4.mp3",
+        "F#4": "Fs4.mp3",
+        "A4": "A4.mp3",
+    }
+
+    // let baseUrl = 'externaltools/tone_instruments/samples/harmonium/'
+    // let samples = {
+    //     "A3": "A3.mp3",
+    //     "A#3": "As3.mp3",
+    //     "C4": "C4.mp3",
+    //     "E3": "E3.mp3",
+    //     "F#2": "Fs2.mp3",
+    // }
+    
+    
+    myPlayPolySample3(urls, samples, baseUrl, notesToPlay)
 })
 
 
@@ -95,14 +112,9 @@ function prepareNotes(notes) {
 
 
 // Tone.Sampler to play poly sound file (e.g., c4.mp3)
-async function myPlayPolySample3(urls, baseUrl, notesToPlay) {
+async function myPlayPolySample3(urls, samples, baseUrl, notesToPlay) {
     const sampler = new Tone.Sampler({
-        urls: {
-            "C4": "C4.mp3",
-            "D#4": "Ds4.mp3",
-            "F#4": "Fs4.mp3",
-            "A4": "A4.mp3",
-        },
+        urls: samples,
         release: 10, // what is it for
         baseUrl: baseUrl,
     }).toDestination();
