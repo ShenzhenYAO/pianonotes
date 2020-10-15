@@ -3,9 +3,9 @@ async function makeInputDoms() {
     let inputdiv_d3xn = d3.select('body').append('div').attr('id', 'inputdiv').attr('class', 'inputdivs')
 
     inputdiv_d3xn.append('div').text('start from').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', 0)
+    inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', 5)
     inputdiv_d3xn.append('div').text('number of notes').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', 10000)
+    inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', 2)
     inputdiv_d3xn.append('div').attr('class', 'inputdivs')
     inputdiv_d3xn.append('button').attr('id', 'makenote').text('make notes').on('click', async function (){ await start(allnotes)}).attr('class', 'inputdivs')
 
@@ -17,23 +17,23 @@ async function makeInputDoms() {
             d3.select('button#makenote').node().click()
         }
     })
+
+
 } //makeInputDoms
 
 async function makeBigDivs() {
     const bigdiv = d3.select('body').append('div')
         .attrs({ 'id': 'bigdiv', 'name': 'div for notes' })
-        .styles({ 'width': '100%', 'height':'50%' })
-    const bigsvg = bigdiv.append('svg').styles({'width': '100%', 'height': '500px', 'border':'solid grey 0px', 'background-color':'white'})
-    const bigg = bigsvg.append('g').attr('id', 'bigg') // for zoom and pan of the piano icons
-
-    //https://stackoverflow.com/questions/48790190/how-to-reset-zoom-in-d3-js
-    // the trick is to let bigg (the g elment transform), but use the bigsvg to call the zoom.
-    // Not the following, where to use bigsvg, where to use bigg!
-    let zoom = d3.zoom().on('zoom', function (ev) { bigg.attr("transform", ev.transform) })
-    bigsvg.call(zoom).on('dblclick.zoom', null) // disable double click as it'll mess up with node/circle dblclick
-    // right click to return to the initial status
-
-
+        .styles({ 'width': '100%' })
+    const bigsvg = bigdiv.append('svg').styles({'width': '100%', 'height':'100%', 'border':'solid'})
+    const bigg = bigsvg.append('g')
+    const bigdivr = bigg.append('svg')
+        .attrs({ 'id': 'bigdivr', 'name': 'Right hand div' })
+        .styles({ 'border': 'solid 0px', 'width': '100%', 'height': '150px', 'margin-top': '20px', 'float': 'left' })
+    const bigdivl = bigg.append('svg')
+        .attrs({ 'id': 'bigdivl', 'name': 'Left hand div' })
+        .styles({ 'border': 'solid 0px', 'width': '100%', 'height': '150px', 'margin-top': '20px', 'float': 'left' })
+    
 } // makeBigDivs
 
 function getNotesToDisplay(allnotes, startpos, length) {

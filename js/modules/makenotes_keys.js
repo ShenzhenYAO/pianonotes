@@ -5,45 +5,68 @@ async function makeNoteDivs(notes) {
     //delete the existing notedivs
     d3.selectAll('div.notediv').remove()
 
-    // determin the number of divs to display
-    let bigdivl = d3.select('div#bigdivl')
-    let bigdivr = d3.select('div#bigdivr')
-    // bdivsize = bigdivl.node().getBoundingClientRect() 
-    let bdivsize = { width: $(bigdivl.node()).width(), height: $(bigdivl.node()).height() }
 
     // determine the number of divs (max 15)
-    let n_divs = Math.min(notes.length, maxnotedivs)
+    let n_divs = notes.length
 
+    // now all notes are displayed
     let displaynotes = notes.splice(0, n_divs)
-    // console.log(displaynotes)
-    // width of the notediv
-    let width_notediv = Math.min(notedivdata.maxwidth, bdivsize.width / n_divs)
 
-    await addnotedivunits(bigdivl, displaynotes, width_notediv)
-    await addnotedivunits(bigdivr, displaynotes, width_notediv)
+    await addMomentUnits(displaynotes)
     // console.log (lnotedivs , rnotedivs)
 
 }// makenotedivs
 
 
-async function addnotedivunits(parent_d3xn, displaynotes, width_notediv) {
-    let notedivs = parent_d3xn.selectAll('div.notediv').data(displaynotes).enter()
-        .append('div')
-        .attr('class', 'notediv')
-        .styles(notedivdata.stdstyles)
-        .styles({ 'width': width_notediv + 'px', 'height': (width_notediv * 1.5) + 'px' })
-        .attr('id', (d, i) => {
-            if (parent_d3xn.attr('id') === 'bigdivl') { return 'lnotediv_' + i } else { return 'rnotediv_' + i }
-        })
+async function addMomentUnits(displaynotes) {
 
-    let notesvgs = notedivs.append('svg').attr('class', 'notesvg').styles({ "width": '90%', 'height': '100%', 'background-color': 'white' })
-    let notegs = notesvgs.append('g').attr('class', 'noteg')
-        .attr('clef', (d) => {
-            if (parent_d3xn.attr('id') === 'bigdivl') { return 'left' } else { return 'right' }
+    let momentg = d3.select('g#bigg').selectAll('g.momentg').data(displaynotes).enter()
+        .append('g')
+        .attr('class', 'momentg') // this g is for transform-translate the position of the  moment icon (a set of piano keys indication which keys to press)
+        .attr('transform', (d, i) => {
+            let x = momentdivdata.maxwidth * i + 20 * i // width of each icon plus 20 px for padding
+            let y = 0
+            let translateStr = 'translate(' + x + ',' + y + ')'
+            return translateStr
         })
+    // the g.moments are moved horizontally according to the order of the displaynote moments
+
+    // // within this momentg, add moment divs for the icons, these divs come in pairs, one for right, one for left
+    // // the reason to use div is that we'll need a moment svg within the div
+    // //  we cannot use a moment svg directly, as svg itself cannot be move by transfomr-translate unless it is within a div
+    // // the reason to use an svg is that it acts as a window, so the g element within can be flexible (bigger than the svg, yet only disply the part within the svg)
+    let momentdivsR = momentg.append('foreignObject')
+        .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
+        .append('xhtml:div')
+        .styles(momentdivdata.stdstyles)
+        .attrs({'class':'momentdivR',  'clef':'right'})
+        .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
+ 
+    let momentdivsL = momentg.append('foreignObject')
+        .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
+        .attr('transform', 'translate(0, 200)')
+        .append('xhtml:div')
+        .styles(momentdivdata.stdstyles)
+        .attrs({'class': 'momentdivL', 'clef':'left'})
+        .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
+ 
+
+    // add a set of moment svgs for the right hand icons
+    let momentsvgR = momentdivsR.append('svg').attrs({'class': 'momentsvgR', 'clef':'right'}).styles({ "width": momentdivdata.maxwidth, 'height': momentdivdata.maxwidth*1.5, 'background-color': 'white' })
+    let inner_momentgR = momentsvgR.append('g').attrs({'class': 'inner_momentgR', 'clef':'right'})
+
+
+    // add a set of svgs for the left hand icons
+    let momentsvgL = momentdivsL.append('svg').attrs({'class': 'momentsvgL', 'clef':'left'}).styles({ "width": momentdivdata.maxwidth, 'height': momentdivdata.maxwidth*1.5, 'background-color': 'white' })
+    let inner_momentgL = momentsvgL.append('g').attrs({'class': 'inner_momentgL',  'clef':'left'})
 
     // add piano keys!
-    let keys = notegs.attr('whatever', (d, i, em) => {
+    let keysR = inner_momentgR.attr('whatever', (d, i, em) => {
+        // console.log(em)
+        addpianokeys(d, i, em)
+    })
+    let keysL = inner_momentgL.attr('whatever', (d, i, em) => {
+        // console.log(em)
         addpianokeys(d, i, em)
     })
 } //addnotedivunits
@@ -56,9 +79,9 @@ function addpianokeys(d, i, em) {
     let minletternum = 9999, maxletternum = 0;
     if (thenotesdata) {
         thenotesdata.forEach(f => {
-            if (! isNaN(f.letternum)) {
-            minletternum = Math.min(minletternum, f.semi === 'b' ? f.letternum - 1 : f.letternum)
-            maxletternum = Math.max(maxletternum, f.semi === '#' ? f.letternum + 1 : f.letternum)
+            if (!isNaN(f.letternum)) {
+                minletternum = Math.min(minletternum, f.semi === 'b' ? f.letternum - 1 : f.letternum)
+                maxletternum = Math.max(maxletternum, f.semi === '#' ? f.letternum + 1 : f.letternum)
             }
         })
         //draw keys within the min and max range (given that thenodes data is not undefined)
@@ -390,7 +413,7 @@ function setWhiteKeys(keyRange, d) {
     let theEndToneLetter = keyRange.end.substr(0, 1)
     // console.log(theToneLetter)
     //
-    while (theToneLetter !== 'R' ) { // a while loop that could go forever
+    while (theToneLetter !== 'R') { // a while loop that could go forever
         // make the next key
         let theCharCode = theToneLetter.charCodeAt(0)
         let nextCharCode = theCharCode + 1;
