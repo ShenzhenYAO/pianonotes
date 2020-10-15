@@ -28,7 +28,7 @@ var notes;
     // get slices of nodes to play
     notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
 
-    await makeNoteDivs(notes)
+    // await makeNoteDivs(notes)
 
     await buildPianoWrappers()
 
