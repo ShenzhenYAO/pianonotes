@@ -16,17 +16,18 @@ var notes;
 
 (async () => {
 
-    await makeInputDoms()
+    // await makeInputDoms()
     await makeBigDivs()
 
-    // get value from the input box
-    let s = document.getElementById('input1')
-    // console.log(parseInt(s.value))
-    let l = document.getElementById('input2')
-    // console.log(parseInt(l.value))
+    // // get value from the input box
+    // let s = document.getElementById('input1')
+    // // console.log(parseInt(s.value))
+    // let l = document.getElementById('input2')
+    // // console.log(parseInt(l.value))
 
     // get slices of nodes to play
-    notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
+    // notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
+    notes = getNotesToDisplay(allnotes, 0, allnotes.length)
 
     await makeNoteDivs(notes)
 

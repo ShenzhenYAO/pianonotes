@@ -6,7 +6,7 @@ async function buildPianoWrappers() {
     let pianodiv_d3xn = d3.select('div#bigdiv').append('div')
         .attrs({ 'id': 'pianodiv', 'name': 'pianodiv' })
         .styles({ 'border': 'solid 0px', 'width': '100%', 
-                'height': pianokeysize.fullscreen_whitekey.height, 'margin-top': '200px', 'float': 'left'})
+                'height': pianokeysize.fullscreen_whitekey.height, 'margin-top': '20px', 'float': 'left'})
 
     let pianosvg_d3xn = pianodiv_d3xn.append('svg').attrs({ 'id': 'pianosvg' })
         .styles({ 'height': '100%', 'width': '100%', 'background-color': 'white' })
