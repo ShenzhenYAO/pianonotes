@@ -30,7 +30,7 @@ async function addMomentUnits(displaynotes) {
         })
 
         console.log(d3.selectAll("g.momentg").nodes().length)
-        astr = astr + '<br/>' + 'g.momentg ' +  d3.selectAll("g.momentg").nodes().length
+        astr = astr + '<br/>' + 'g.momentg ' +  d3.select(d3.selectAll("g.momentg").nodes()[1]).attr('transform')
         statusdiv.html(astr)
         
     // the g.moments are moved horizontally according to the order of the displaynote moments
