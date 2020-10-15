@@ -10,6 +10,9 @@ var allnotes = getMusicNotes(note_stdobj);
 
 var notes;
 
+var statusdiv =d3.select('div#statusdiv')
+var astr 
+
 //https://tonejs.github.io/
 // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 
@@ -18,7 +21,7 @@ var notes;
 
     // await makeInputDoms()
     await makeBigDivs()
-    let astr='makeBigDivs() run successfully'
+    astr='makeBigDivs() run successfully'
     d3.select('div#statusdiv').html(astr)
 
     // // get value from the input box
