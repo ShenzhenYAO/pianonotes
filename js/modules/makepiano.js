@@ -83,10 +83,20 @@ async function buildPianoKeys() {
             }
             return 'key_' + toneletter + octaveN
         })
-        .on('click', async function (ev) {
-            // console.log(ev)
-            await onKeyPress(ev)
-        })
+        // .on('click', async function (ev) {
+        //     // console.log(ev)
+        //     await onKeyPress(ev)
+        // }) has conflict with mouse down event, do not set click event here
+        .on('mousedown', async function (ev) {
+            // console.log('mousedown')
+    
+            ev.preventDefault()
+            ev.stopPropagation()
+    
+            playPressedKey(ev)
+            // console.log(d3.select(ev.target));
+    
+        }) 
 
     pianog_d3xn.selectAll('g.whitekeyg')
         .append('text')
@@ -181,9 +191,18 @@ function addBlackKey_wholepiano(em, emi, width_whitekey, height_whitekey) {
         .attr('id', (d, i) => {
             return 'key_' + toneletter + 's' + octaveN
         })
-        .on('click', async function (ev) {
-            // console.log(ev)
-            await onKeyPress(ev)
+        // .on('click', async function (ev) {
+        //     // console.log(ev)
+        //     await onKeyPress(ev)
+        // }) // conflic with mouse down setting, do not set click event here
+        .on('mousedown', async function (ev) {
+            console.log('mousedown')
+    
+            ev.preventDefault()
+            ev.stopPropagation()
+    
+            playPressedKey(ev)
+            // console.log(d3.select(ev.target));    
         })
 
     keyg

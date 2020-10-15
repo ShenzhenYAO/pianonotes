@@ -255,3 +255,61 @@ async function playAnoteAttackThenRelease(note) {
         synth.triggerRelease(keystr, now + seconds) // it is better than '4n'.
     });
 } // playAnoteAttackRelease
+
+
+
+// https://stackoverflow.com/questions/50281568/audiocontext-not-allowed-to-start-in-tonejs-chrome
+// https://tonejs.github.io/
+// the key is to wait until resumed (Tone.context.resume())
+async function playPressedKey(ev) {
+
+    d3.select(ev.target).attr('fill', 'lightgrey')
+
+    let toneletter, octaveN;
+    let semi = ""
+
+    // console.log(ev)
+
+
+    let id = ev.target.id
+    let tonestr = id.substr(4, id.length)
+    // console.log(id, tonestr.length)
+
+    if (tonestr.length === 2) {
+        toneletter = tonestr.substr(0, 1)
+        octaveN = tonestr.substr(1, 1)
+    }
+    if (tonestr.length > 2) {
+        toneletter = tonestr.substr(0, 1)
+        semitoneletter = tonestr.substr(1, 1)
+        if (semitoneletter === 's') { semi = '#' }
+        octaveN = tonestr.substr(2, 1)
+    }
+    var key = toneletter + semi + octaveN
+    // console.log('play sound', key, octaveN)
+    const baseUrl = 'data/instruments/piano/'
+    const sampler = new Tone.Sampler({
+        urls: {
+            "C4": "C4.mp3",
+            "D#4": "Ds4.mp3",
+            "F#4": "Fs4.mp3",
+            "A4": "A4.mp3",
+        },
+        release: 1, // what is it for
+        baseUrl: baseUrl,
+    }).toDestination();
+    Tone.loaded().then(async function () {
+        // console.log(key)
+        await Tone.start()
+        const now = Tone.now() // must be set every time playing a note
+        Tone.context.resume().then(() => {
+            // loop to configure each note
+            sampler.triggerAttack(key, now)
+            d3.select(ev.target).on('mouseup', async function () {
+                // console.log('mouseup')
+                sampler.triggerRelease(key, now)
+                d3.select(ev.target).attr('fill', 'white')
+            }) // d3.select(ev.target)
+        }); // Tone.context.resum
+    }) // Tone.loaded
+} //onKeyPress

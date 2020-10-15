@@ -47,9 +47,7 @@ var notes;
     });
     resizeObserver.observe(d3.select('div#pianodiv').node());
 
-    
-
-    await test1()
+        await test1()
 //   // play a middle 'C' for the duration of an 8th note
 //     // trigger the attack immediately
 // synth.triggerAttack("C4", now)
