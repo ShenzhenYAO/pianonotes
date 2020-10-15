@@ -28,7 +28,7 @@ async function makeBigDivs() {
         .styles({ 'width': '100%', 'height': '100%', 'border': 'solid grey 1px', 'background-color': 'purple' })
     
     const bigg = bigsvg.append('g').attr('id', 'bigg') // for zoom and pan of the piano icons
-    bigg.append('foreignObject')
+    bigg.append('foreignObject').attrs({'width':'300', 'height':'300'})
     .styles({ 'width': '300px', 'height': '100px', 'background-color':'green' })
 
 
