@@ -32,7 +32,7 @@ async function addMomentUnits(displaynotes) {
         console.log(d3.selectAll("g.momentg").nodes().length)
         astr = astr + '<br/>' + 'g.momentg ' +  d3.selectAll("g.momentg").nodes().length
         statusdiv.html(astr)
-        return
+        
     // the g.moments are moved horizontally according to the order of the displaynote moments
 
     // // within this momentg, add moment divs for the icons, these divs come in pairs, one for right, one for left
@@ -53,6 +53,13 @@ async function addMomentUnits(displaynotes) {
         .styles(momentdivdata.stdstyles)
         .attrs({'class': 'momentdivL', 'clef':'left'})
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
+    
+        console.log(d3.selectAll("div.momentdivR").nodes().length)
+        astr = astr + '<br/>' + 'div.momentdivR ' +  d3.selectAll("div.momentdivR").nodes().length
+        statusdiv.html(astr)
+        console.log(d3.selectAll("div.momentdivL").nodes().length)
+        astr = astr + '<br/>' + 'div.momentdivL ' +  d3.selectAll("div.momentdivL").nodes().length
+        statusdiv.html(astr)
 
     return
 
