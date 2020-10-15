@@ -29,9 +29,9 @@ async function makeBigDivs() {
     //https://stackoverflow.com/questions/48790190/how-to-reset-zoom-in-d3-js
     // the trick is to let bigg (the g elment transform), but use the bigsvg to call the zoom.
     // Not the following, where to use bigsvg, where to use bigg!
-    let zoom = d3.zoom().on('zoom', function (ev) { bigg.attr("transform", ev.transform) })
-    bigsvg.call(zoom).on('dblclick.zoom', null) // disable double click as it'll mess up with node/circle dblclick
-    // right click to return to the initial status
+    // let zoom = d3.zoom().on('zoom', function (ev) { bigg.attr("transform", ev.transform) })
+    // bigsvg.call(zoom).on('dblclick.zoom', null) // disable double click as it'll mess up with node/circle dblclick
+
 
 
 } // makeBigDivs
