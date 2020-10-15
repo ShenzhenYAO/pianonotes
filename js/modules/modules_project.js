@@ -25,8 +25,12 @@ async function makeBigDivs() {
         .styles({ 'width': '800px', 'height': '400px', 'margin-top': '100px' })
     const bigsvg = bigdiv.append('svg')
         .attrs({ "xmlns": "http://www.w3.org/2000/svg", "version": "1.1", 'id':'bigsvg' })
-        .styles({ 'width': '100%', 'height': '500px', 'border': 'solid grey 1px', 'background-color': 'purple' })
+        .styles({ 'width': '100%', 'height': '100%', 'border': 'solid grey 1px', 'background-color': 'purple' })
+    
     const bigg = bigsvg.append('g').attr('id', 'bigg') // for zoom and pan of the piano icons
+    bigg.append('foreignObject')
+    .styles({ 'width': '300px', 'height': '100px', 'background-color':'green' })
+
 
     //https://stackoverflow.com/questions/48790190/how-to-reset-zoom-in-d3-js
     // the trick is to let bigg (the g elment transform), but use the bigsvg to call the zoom.
