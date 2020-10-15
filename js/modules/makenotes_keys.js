@@ -55,10 +55,10 @@ async function addMomentUnits(displaynotes) {
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
     
         console.log(d3.selectAll("div.momentdivR").nodes().length)
-        astr = astr + '<br/>' + 'div.momentdivR ' +  d3.selectAll("div.momentdivR").nodes().length
+        astr = astr + '<br/>' + 'div.momentdivR ' +  d3.selectAll("div.momentdivR").style('width')
         statusdiv.html(astr)
         console.log(d3.selectAll("div.momentdivL").nodes().length)
-        astr = astr + '<br/>' + 'div.momentdivL ' +  d3.selectAll("div.momentdivL").nodes().length
+        astr = astr + '<br/>' + 'div.momentdivL ' +  d3.selectAll("div.momentdivL").style('background-color')
         statusdiv.html(astr)
 
     return
