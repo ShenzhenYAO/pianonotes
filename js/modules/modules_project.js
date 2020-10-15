@@ -23,7 +23,7 @@ async function makeBigDivs() {
     const bigdiv = d3.select('body').append('div')
         .attrs({ 'id': 'bigdiv', 'name': 'div for notes' })
         .styles({ 'width': '100%', 'height':'50%', 'margin-top':'10%' })
-    const bigsvg = bigdiv.append('svg').styles({'width': '100%', 'height': '500px', 'border':'solid grey 0px', 'background-color':'white'})
+    const bigsvg = bigdiv.append('svg').styles({'width': '100%', 'height': '500px', 'border':'solid grey 0px', 'background-color':'yellow'})
     const bigg = bigsvg.append('g').attr('id', 'bigg') // for zoom and pan of the piano icons
 
     //https://stackoverflow.com/questions/48790190/how-to-reset-zoom-in-d3-js
