@@ -7,13 +7,13 @@ async function makeInputDoms() {
     inputdiv_d3xn.append('div').text('number of notes').attr('class', 'inputdivs')
     inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', 10000)
     inputdiv_d3xn.append('div').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('button').attr('id', 'makenote').text('make notes').on('click', async function (){ await start(allnotes)}).attr('class', 'inputdivs')
+    inputdiv_d3xn.append('button').attr('id', 'makenote').text('make notes').on('click', async function () { await start(allnotes) }).attr('class', 'inputdivs')
 
     d3.selectAll('div.inputdivs').style('margin', '10px')
 
-    $(document).on('keypress', ev=>{
+    $(document).on('keypress', ev => {
         // console.log(ev.key)
-        if (ev.key === 'Enter'){
+        if (ev.key === 'Enter') {
             d3.select('button#makenote').node().click()
         }
     })
@@ -22,10 +22,10 @@ async function makeInputDoms() {
 async function makeBigDivs() {
     const bigdiv = d3.select('body').append('div')
         .attrs({ 'id': 'bigdiv', 'name': 'div for notes' })
-        .styles({ 'width': '800px', 'height':'400px', 'margin-top':'100px' })
-    const bigsvg = bigdiv            .append('svg')
-            .attrs({"xmlns": "http://www.w3.org/2000/svg", "version":"1.1"})
-            .styles({'width': '100%',        'height': '500px', 'border':'solid grey 1px', 'background-color':'white'})
+        .styles({ 'width': '800px', 'height': '400px', 'margin-top': '100px' })
+    const bigsvg = bigdiv.append('svg')
+        .attrs({ "xmlns": "http://www.w3.org/2000/svg", "version": "1.1", 'id':'bigsvg' })
+        .styles({ 'width': '100%', 'height': '500px', 'border': 'solid grey 1px', 'background-color': 'purple' })
     const bigg = bigsvg.append('g').attr('id', 'bigg') // for zoom and pan of the piano icons
 
     //https://stackoverflow.com/questions/48790190/how-to-reset-zoom-in-d3-js
@@ -56,7 +56,7 @@ async function start() {
     // get slices of nodes to play
     notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
 
-     
+
     // make note divs
     await makeNoteDivs(notes)
 
