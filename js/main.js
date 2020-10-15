@@ -4,6 +4,7 @@ var lnotedivs = [], tmpdiv = undefined;
 var rnotedivs = [];
 let note_stdobj = datastr_to_stdobj(notesStr);
 // console.log(note_stdobj)
+
 var allnotes = getMusicNotes(note_stdobj);
 // console.log(allnotes);
 
@@ -27,7 +28,6 @@ var notes;
     // get slices of nodes to play
     notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
 
-
     await makeNoteDivs(notes)
 
     await buildPianoWrappers()
@@ -50,8 +50,8 @@ var notes;
     
 
     await test1()
-    //play a middle 'C' for the duration of an 8th note
-    // trigger the attack immediately
+//   // play a middle 'C' for the duration of an 8th note
+//     // trigger the attack immediately
 // synth.triggerAttack("C4", now)
 // // wait one second before triggering the release
 // synth.triggerRelease(now + 1)  

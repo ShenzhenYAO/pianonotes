@@ -27,7 +27,6 @@ async function makeNoteDivs(notes) {
 
 
 async function addnotedivunits(parent_d3xn, displaynotes, width_notediv) {
-
     let notedivs = parent_d3xn.selectAll('div.notediv').data(displaynotes).enter()
         .append('div')
         .attr('class', 'notediv')
@@ -51,19 +50,19 @@ async function addnotedivunits(parent_d3xn, displaynotes, width_notediv) {
 
 
 function addpianokeys(d, i, em) {
-
     // determine the min and max leternumber
     // determine the min and max letter number, which is for determining the start and end piano key
     let thenotesdata = d[d3.select(em[i]).attr('clef')] // either left or right
     let minletternum = 9999, maxletternum = 0;
     if (thenotesdata) {
         thenotesdata.forEach(f => {
+            if (! isNaN(f.letternum)) {
             minletternum = Math.min(minletternum, f.semi === 'b' ? f.letternum - 1 : f.letternum)
             maxletternum = Math.max(maxletternum, f.semi === '#' ? f.letternum + 1 : f.letternum)
+            }
         })
         //draw keys within the min and max range (given that thenodes data is not undefined)
         let keyRange = startEndKeys(thenotesdata, i, em, minletternum, maxletternum)
-        // console.log(keyRange)
 
         drawkeys(keyRange, d, i, em)
     } //if
@@ -76,9 +75,6 @@ function drawkeys(keyRange, d, i, em) {
     let theWhiteKeys = setWhiteKeys(keyRange, d)
 
     makeKeys(theWhiteKeys, d, i, em)
-
-
-
 
     // if the new key is the end key, stop
     // according to number of keys, determine width of the white key, then the height (to fit all keys within 90% of the div/svg)
@@ -371,6 +367,7 @@ function setWhiteKeys(keyRange, d) {
     // get the keys to press from d
     let presskeydata = d[keyRange.clef]
     let presskeys = presskeydata.map(x => x.tone)
+    // console.log(presskeys)
 
     // make an obj like ['C5': {beat:1, figure:'5'}]
     let presskeydict = {}
@@ -391,8 +388,9 @@ function setWhiteKeys(keyRange, d) {
     let theToneLetter = keyRange.start.substr(0, 1)
     theoctaveN = keyRange.start.substr(1, 1)
     let theEndToneLetter = keyRange.end.substr(0, 1)
+    // console.log(theToneLetter)
     //
-    while (theToneLetter !== 1) { // a while loop that could go forever
+    while (theToneLetter !== 'R' ) { // a while loop that could go forever
         // make the next key
         let theCharCode = theToneLetter.charCodeAt(0)
         let nextCharCode = theCharCode + 1;

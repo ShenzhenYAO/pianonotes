@@ -9,8 +9,9 @@ function datastr_to_stdobj(str) {
     let momentStrs = getMomentStrs(str);
     // loop for string of eacn moment
     momentStrs.forEach(momentStr => {
+        // console.log(momentStr)
         // split into left/right clef
-        let clefs = getclef(momentStr);
+        let clefs = getclef(momentStr.data);
         let cleftkeys = Object.keys(clefs)
         cleftkeys.forEach(f => {
             // split by ';' to have data
@@ -18,6 +19,7 @@ function datastr_to_stdobj(str) {
             // for each note in _arr, get data of staff postion, beat, and finger
             _arr.forEach((g, i) => {
                 let notedata_obj = getNodeData(g)
+                notedata_obj.dataline = momentStr.line
                 _arr[i] = notedata_obj
             })
             clefs[f] = _arr
@@ -25,6 +27,7 @@ function datastr_to_stdobj(str) {
         if (clefs) { result.push(clefs) }
     }) // for each momentstr
 
+    // console.log(result)
     return result
 
 }//  datastr_to_stdobj
@@ -88,9 +91,14 @@ function getMomentStrs(str) {
     let _arr = str.split(/\n/)
     // console.log(_arr)
     if (_arr) {
-        _arr.forEach(d => {
-            if (d !== null && d.trim().length > 0)
-                result.push(d)
+        
+        _arr.forEach((d, i) => {
+            if (d !== null && d.trim().length > 0){
+                let tmp={}
+                tmp.line = i+1
+            tmp.data=d
+                result.push(tmp)
+            }            
         })
     }
     return result

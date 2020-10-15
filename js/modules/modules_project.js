@@ -3,16 +3,16 @@ async function makeInputDoms() {
     let inputdiv_d3xn = d3.select('body').append('div').attr('id', 'inputdiv').attr('class', 'inputdivs')
 
     inputdiv_d3xn.append('div').text('start from').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', 7)
+    inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', 5)
     inputdiv_d3xn.append('div').text('number of notes').attr('class', 'inputdivs')
-    inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', 5)
+    inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', 2)
     inputdiv_d3xn.append('div').attr('class', 'inputdivs')
     inputdiv_d3xn.append('button').attr('id', 'makenote').text('make notes').on('click', async function (){ await start(allnotes)}).attr('class', 'inputdivs')
 
     d3.selectAll('div.inputdivs').style('margin', '10px')
 
     $(document).on('keypress', ev=>{
-        console.log(ev.key)
+        // console.log(ev.key)
         if (ev.key === 'Enter'){
             d3.select('button#makenote').node().click()
         }

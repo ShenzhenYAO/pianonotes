@@ -31,19 +31,6 @@ async function onKeyPress(ev) {
 
 } //onKeyPress
 
-async function playnote(toneletter, semi, octaveN, seconds) {
-    let keystr = toneletter + semi + octaveN;
-    // await synth.triggerAttack(keystr, now)
-    // // wait one second before triggering the release
-    // await synth.triggerRelease(now + seconds)
-    await Tone.start()
-    Tone.context.resume().then(() => {
-        synth.triggerAttackRelease(keystr, (1/seconds)*8 + 'n');
-        synth.context.resume()
-        Tone.context.resume()
-    });    
-    
-} // playnote
 
 // // the following crap is about Tone.js. It sucks
 // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
