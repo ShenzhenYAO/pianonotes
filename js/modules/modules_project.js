@@ -23,15 +23,15 @@ async function makeBigDivs() {
     const bigdiv = d3.select('body').append('div')
         .attrs({ 'id': 'bigdiv', 'name': 'div for notes' })
         .styles({ 'width': '100%', 'height':'50%', 'margin-top':'10%' })
-    const bigsvg = bigdiv.append('svg').styles({'width': '100%', 'height': '500px', 'border':'solid grey 0px', 'background-color':'yellow'})
+    const bigsvg = bigdiv.append('svg').styles({'width': '100%', 
+        'height': '500px', 'border':'solid grey 0px', 'background-color':'white'})
     const bigg = bigsvg.append('g').attr('id', 'bigg') // for zoom and pan of the piano icons
 
     //https://stackoverflow.com/questions/48790190/how-to-reset-zoom-in-d3-js
     // the trick is to let bigg (the g elment transform), but use the bigsvg to call the zoom.
     // Not the following, where to use bigsvg, where to use bigg!
-    // let zoom = d3.zoom().on('zoom', function (ev) { bigg.attr("transform", ev.transform) })
-    // bigsvg.call(zoom).on('dblclick.zoom', null) // disable double click as it'll mess up with node/circle dblclick
-
+    let zoom = d3.zoom().on('zoom', function (ev) { bigg.attr("transform", ev.transform) })
+    bigsvg.call(zoom).on('dblclick.zoom', null) // disable double click as it'll mess up with node/circle dblclick
 
 
 } // makeBigDivs

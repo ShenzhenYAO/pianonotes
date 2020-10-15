@@ -25,16 +25,29 @@ var notes;
     // let l = document.getElementById('input2')
     // // console.log(parseInt(l.value))
 
+    let astr='makeBigDivs() run successfully'
+    d3.select('div#statusdiv').html(astr)
+
     // get slices of nodes to play
     // notes = getNotesToDisplay(allnotes, parseInt(s.value), parseInt(l.value))
     notes = getNotesToDisplay(allnotes, 0, allnotes.length)
 
+    astr= astr + '<br/>'+'getNotesToDisplay() run successfully'
+    d3.select('div#statusdiv').html(astr)
+
     await makeNoteDivs(notes)
+    astr= astr + '<br/>'+'makeNoteDivs() run successfully'
+    d3.select('div#statusdiv').html(astr)
 
     await buildPianoWrappers()
+    astr= astr + '<br/>'+'buildPianoWrappers() run successfully'
+    d3.select('div#statusdiv').html(astr)
 
     // // build the initinal piano
     await buildPianoKeys()
+    astr= astr + '<br/>'+'buildPianoKeys() run successfully'
+    d3.select('div#statusdiv').html(astr)
+
 
     // //https://www.geeksforgeeks.org/how-to-detect-the-change-in-divs-dimension/
     // let resizeObserver = new ResizeObserver(async function () { // requires jquery
