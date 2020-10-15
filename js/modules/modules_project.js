@@ -22,7 +22,7 @@ async function makeInputDoms() {
 async function makeBigDivs() {
     const bigdiv = d3.select('body').append('div')
         .attrs({ 'id': 'bigdiv', 'name': 'div for notes' })
-        .styles({ 'width': '1000px', 'height':'500px', 'margin-top':'100px' })
+        .styles({ 'width': '800px', 'height':'400px', 'margin-top':'100px' })
     const bigsvg = bigdiv.append('svg').styles({'width': '100%', 
         'height': '500px', 'border':'solid grey 1px', 'background-color':'white'})
     const bigg = bigsvg.append('g').attr('id', 'bigg') // for zoom and pan of the piano icons
