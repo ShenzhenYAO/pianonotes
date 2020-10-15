@@ -196,7 +196,7 @@ function addBlackKey_wholepiano(em, emi, width_whitekey, height_whitekey) {
         //     await onKeyPress(ev)
         // }) // conflic with mouse down setting, do not set click event here
         .on('mousedown', async function (ev) {
-            console.log('mousedown')
+            // console.log('mousedown')
     
             ev.preventDefault()
             ev.stopPropagation()

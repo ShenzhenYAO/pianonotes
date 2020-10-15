@@ -1,3 +1,5 @@
+// https://tonejs.github.io/
+
 const quarternotesperminute = 76*2
 
 // const synth = new Tone.Synth().toDestination(); // when play samples, do not need to load Synth or polySynth
@@ -269,8 +271,6 @@ async function playPressedKey(ev) {
     let semi = ""
 
     // console.log(ev)
-
-
     let id = ev.target.id
     let tonestr = id.substr(4, id.length)
     // console.log(id, tonestr.length)
@@ -307,8 +307,15 @@ async function playPressedKey(ev) {
             sampler.triggerAttack(key, now)
             d3.select(ev.target).on('mouseup', async function () {
                 // console.log('mouseup')
-                sampler.triggerRelease(key, now)
-                d3.select(ev.target).attr('fill', 'white')
+                sampler.triggerRelease(key, now)                
+                d3.select(ev.target).attr('fill',  function (){ // async not work
+                    // console.log(key.length)
+                    if (key.length > 2) {
+                        return 'black';
+                    } else {
+                        return 'white';
+                    } // if
+                }) // d3.select
             }) // d3.select(ev.target)
         }); // Tone.context.resum
     }) // Tone.loaded
