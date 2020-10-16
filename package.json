@@ -9,6 +9,7 @@
   "author": "Liwen",
   "license": "ISC",
   "dependencies": {
-    "tone": "^14.7.58"
+    "tone": "^14.7.58",
+    "vexflow": "^3.0.9"
   }
 }
