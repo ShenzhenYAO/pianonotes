@@ -1,0 +1,150 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <!-- the following allows to use attrs({}) -->
+    <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vexflow/3.0.9/vexflow-min.js"
+        integrity="sha512-le/+X9Wjo8roJpCBunTPOGzGGhCqyXsbxgoEwngieMRVDieKxfHusDD6iFJqw8RUGkfj7se7Nc6cf4NbLUPDzA=="
+        crossorigin="anonymous"></script>
+
+
+
+
+</head>
+
+<body>
+    <div>
+        <svg id="boo">
+            <g id='staveg'>
+
+            </g>
+        </svg>
+    </div>
+
+    <script>
+        // https://github.com/0xfe/vexflow/wiki/The-VexFlow-Tutorial
+        const VF = Vex.Flow;
+
+        let parentID = 'staveg'
+        let clef = 'left'
+        let notes = [{ tone: 'F#5', beat: 1 }, { tone: 'E4', beat: 2 }, { tone: 'G#4', beat: 3 }]
+        makeStaveNote(parentID, notes)
+        function makeStaveNote(parentID, notes, clef) {
+
+            // use a g element as the parent node of the vf stave components
+            // so that it can be transform to fit the display window
+
+            // identify the staveg obj and dom
+            var staveg_d3xn = d3.select('#' + parentID)
+            var staveg_dom = staveg_d3xn.node()
+
+            // VF to add an SVG within the parent G
+            var renderer = new VF.Renderer(staveg_dom, VF.Renderer.Backends.SVG);
+
+            // resize, make it high enough for vertical space (some nodes need to be above or below the staff lines)
+            renderer.resize(500, 500);
+
+            // let inner_stavesv_d3xn = d3.select(staveg).select('svg')
+            // the following does not work
+            // inner_stavesv_d3xn.styles({ 'background-color':  "yellow", 'border': 'solid 1px', 'width':'200px', 'height':'200px' })
+
+            // do not know what it is for, getContext()...
+            var context = renderer.getContext();
+
+            // Create a stave at position 0, 10 of width 102 on the canvas
+            // This is the normal position for a stave (without adjustment for over high/low notes)
+            var stave = new VF.Stave(0, 10, 102)
+
+            // stave.addClef("treble").addTimeSignature("4/4");
+            // the following draws the staff line (the empty stave)
+            stave.setContext(context).draw();
+
+            // define the notes to be plotted in the stave system
+            let convertedNotes = []
+            convertedNotes = convertTones(notes, convertedNotes)
+            function convertTones(notes, convertedNotes) {
+                let keys = [], accidentals = [], minbeat = 999, notesleft = [], durationstr
+                notes.forEach((d, i) => {
+                    // 1. keys
+                    // get keys (from like F#5 or E4, to F#/5, and E/4)
+                    if (d.tone.length === 3) {
+                        let tmpstr = d.tone.substr(0, 2) + '/' + d.tone.substr(2, 1)
+                        keys.push(tmpstr)
+                        accidentals.push({ index: i, symbol: d.tone.substr(1, 1) })
+                    } else {
+                        let tmpstr = d.tone.substr(0, 1) + '/' + d.tone.substr(1, 1)
+                        keys.push(tmpstr)
+                    } // if(d.tone.length === 3) 
+
+                    // 2. duration
+                    let tmpbeat = d.beat
+                    minbeat = Math.min(minbeat, tmpbeat)
+                    let durationnum = (1 / minbeat) * 4
+                    durationstr = durationnum.toString()
+
+                    // 3. if there are remaining beat, carry over to the next run
+                    if (d.beat - minbeat > 0) {
+                        notesleft.push({ tone: d.tone, beat: d.beat - minbeat })
+                    }
+
+                }) // notes.forEach
+
+                let result = { keys: keys, accidentals: accidentals, duration: durationstr }
+                convertedNotes.push(result)
+
+                // if there is remaining beats, do it again
+                if (notesleft.length>0){convertedNotes = convertTones(notesleft, convertedNotes) }
+
+                return convertedNotes
+                
+            } // convertTones(notes)
+
+            // add convertedNotes
+            let voices =[]
+            convertedNotes.forEach(d=>{
+                console.log(d)
+                let thevoice = new VF.StaveNote({clef:clef, keys: d.keys, duration: d.duration})
+                if (d.accidentals.length >0 ){
+                    d.accidentals.forEach(e=>{
+                        thevoice.addAccidental(e.index, new VF.Accidental(e.symbol))
+                    })
+                } // if 
+                voices.push(thevoice)
+            }) // convertedNotes.forEach
+
+            // var voices = [
+            //     // A quarter-note C.
+            //     new VF.StaveNote({ clef: clef, keys: ["f#/5", 'e/4'], duration: "8" })
+            //         .addAccidental(0, new VF.Accidental("#")),
+            // ];
+
+            // Create a voice in 4/4 and add the notes from above
+            var voice = new VF.Voice({ num_beats: 3, beat_value: 4 });
+            voice.addTickables(voices);
+
+            // Format and justify the notes to 400 pixels. // no idea what is it for
+            var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 300);
+
+            // Render voice
+            voice.draw(context, stave);
+
+            // get the highest and lowest node, so as to determine the transform of the stave
+            // offset for over high/low notes, change scale for both over high and over low notes
+            staveg_d3xn.attr('transform', 'translate(-2, 40)')
+        }
+
+
+    </script>
+
+</body>
+
+</html>

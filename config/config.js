@@ -36,3 +36,10 @@ const notekeydata = {
     white: { stdattrs: { 'class': 'notewhitekeyrect', 'stroke': 'black', 'stroke-width': 1, 'width': '4', 'height': '4', 'fill': 'white' } },
     black: { stdattrs: { 'class': 'noteblackkeyrect', 'stroke': 'black', 'stroke-width': 1, 'width': '4', 'height': '4', 'fill': 'grey' } }
 }
+
+const stavedivdata = {
+    width: 100,
+    height: 50,
+    stdstyles: { 'border': 'solid 1px', 'background-color': 'yellow'  }
+}
+

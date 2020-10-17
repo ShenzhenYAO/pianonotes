@@ -39,17 +39,77 @@ async function addMomentUnits(displaynotes) {
     // // the reason to use div is that we'll need a moment svg within the div
     // //  we cannot use a moment svg directly, as svg itself cannot be move by transfomr-translate unless it is within a div
     // // the reason to use an svg is that it acts as a window, so the g element within can be flexible (bigger than the svg, yet only disply the part within the svg)
-    let momentdivsR = momentg.append('foreignObject')
+
+
+    // let staveFOR = momentg.append('foreignObject')
+    //     .attrs({ 'width': stavedivdata.width, 'height': stavedivdata.height })
+    //     .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
+
+    let staveg = momentg.append('svg')
+        .attrs({ 'width': stavedivdata.width*10, 'height': stavedivdata.height*10 })
+        .styles({ 'width': stavedivdata.width*10 + 'px', 'height': stavedivdata.height*10 + 'px' })
+        .attr('id', (d, i) => {
+            let idstr = 'stavesvg_right_' + i
+            return idstr
+        })
+
+
+        .append('g')
+        .attr('class', 'staveg')
+        
+    let staveFOR = staveg.append('foreignObject')
+        .attrs({ 'width': stavedivdata.width*4, 'height': stavedivdata.height*4 })
+        .styles({ 'width': stavedivdata.width*4 + 'px', 'height': stavedivdata.height*4 + 'px' })
+    staveFOR.append('xhtml:div')
+        .styles(stavedivdata.stdstyles)
+        .attrs({ 'class': 'stavediv', 'clef': 'right' })
+        .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
+        .attr('id', (d, i) => {
+            let idstr = 'stavediv_right_' + i
+            return idstr
+        })
+
+
+    let momentFOR = momentg.append('foreignObject')
         .attrs({ 'width': momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5 }) // attr w/h are for the stupid Safari
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
+        .attr('transform', d => {
+            let y = stavedivdata.height * 1.2 +300
+            return 'translate(0, ' + y + ')'
+        }) // move down for 200 px
+
+    let momentdivsR = momentFOR
         .append('xhtml:div')
         .styles(momentdivdata.stdstyles)
         .attrs({ 'class': 'momentdivR', 'clef': 'right' })
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
-    let momentdivsL = momentg.append('foreignObject')
+
+
+    let staveFOL = momentg.append('foreignObject')
+        .attrs({ 'width': stavedivdata.width, 'height': stavedivdata.height })
+        .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
+        .attr('transform', d => {
+            let y = stavedivdata.height * 1.2 + momentdivdata.maxwidth * 1.5 + 50
+            return 'translate(0, ' + y + ')'
+        }) // move down for 200 px
+    staveFOL.append('xhtml:div')
+        .styles(stavedivdata.stdstyles)
+        .attrs({ 'class': 'stavediv', 'clef': 'left' })
+        .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
+        .attr('id', (d, i) => {
+            let idstr = 'stavediv_left_' + i
+            return idstr
+        })
+
+
+    let momentFOL = momentg.append('foreignObject')
         .attrs({ 'width': momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5 })
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
-        .attr('transform', 'translate(0, 200)') // move down for 200 px
+        .attr('transform', d => {
+            let y = momentdivdata.maxwidth * 1.5 + stavedivdata.height * 1.2 * 2 + 500
+            return 'translate(0, ' + y + ')'
+        }) // move down for 200 px
+    let momentdivsL = momentFOL
         .append('xhtml:div')
         .styles(momentdivdata.stdstyles)
         .attrs({ 'class': 'momentdivL', 'clef': 'left' })
@@ -92,6 +152,9 @@ function addpianokeys(d, i, em) {
             if (!isNaN(f.letternum)) {
                 minletternum = Math.min(minletternum, f.semi === 'b' ? f.letternum - 1 : f.letternum)
                 maxletternum = Math.max(maxletternum, f.semi === '#' ? f.letternum + 1 : f.letternum)
+            } else {
+                minletternum = 39
+                maxletternum = 39
             }
         })
         //draw keys within the min and max range (given that thenodes data is not undefined)
