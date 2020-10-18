@@ -5,7 +5,7 @@ var rnotedivs = [];
 // let note_stdobj = datastr_to_stdobj(notesStr);
 let note_stdobj = datastr_to_stdobj(notesStr_lb);
 
-
+const VF = Vex.Flow;
 
 // console.log(note_stdobj)
 

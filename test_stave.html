@@ -62,7 +62,7 @@
 
             // Create a stave at position 0, 10 of width 102 on the canvas
             // This is the normal position for a stave (without adjustment for over high/low notes)
-            var stave = new VF.Stave(0, 10, 102)
+            var stave = new VF.Stave(0, 0, 500)
 
             // stave.addClef("treble").addTimeSignature("4/4");
             // the following draws the staff line (the empty stave)
@@ -72,7 +72,7 @@
             let convertedNotes = []
             convertedNotes = convertTones(notes, convertedNotes)
             function convertTones(notes, convertedNotes) {
-                let keys = [], accidentals = [], minbeat = 999, notesleft = [], durationstr
+                let keys = [], accidentals = [], minbeats = 999, maxbeats = 0, notesleft = [], durationstr
                 notes.forEach((d, i) => {
                     // 1. keys
                     // get keys (from like F#5 or E4, to F#/5, and E/4)
@@ -87,18 +87,19 @@
 
                     // 2. duration
                     let tmpbeat = d.beat
-                    minbeat = Math.min(minbeat, tmpbeat)
-                    let durationnum = (1 / minbeat) * 4
+                    minbeats = Math.min(minbeats, tmpbeat)
+                    maxbeats = Math.max(maxbeats, tmpbeat)
+                    let durationnum = (1 / minbeats) * 4
                     durationstr = durationnum.toString()
 
                     // 3. if there are remaining beat, carry over to the next run
-                    if (d.beat - minbeat > 0) {
-                        notesleft.push({ tone: d.tone, beat: d.beat - minbeat })
+                    if (d.beat - minbeats > 0) {
+                        notesleft.push({ tone: d.tone, beat: d.beat - minbeats })
                     }
 
                 }) // notes.forEach
 
-                let result = { keys: keys, accidentals: accidentals, duration: durationstr }
+                let result = { keys: keys, accidentals: accidentals, duration: durationstr, maxbeats:maxbeats }
                 convertedNotes.push(result)
 
                 // if there is remaining beats, do it again
@@ -111,7 +112,7 @@
             // add convertedNotes
             let voices =[]
             convertedNotes.forEach(d=>{
-                console.log(d)
+                // console.log(d)
                 let thevoice = new VF.StaveNote({clef:clef, keys: d.keys, duration: d.duration})
                 if (d.accidentals.length >0 ){
                     d.accidentals.forEach(e=>{
@@ -121,14 +122,8 @@
                 voices.push(thevoice)
             }) // convertedNotes.forEach
 
-            // var voices = [
-            //     // A quarter-note C.
-            //     new VF.StaveNote({ clef: clef, keys: ["f#/5", 'e/4'], duration: "8" })
-            //         .addAccidental(0, new VF.Accidental("#")),
-            // ];
-
             // Create a voice in 4/4 and add the notes from above
-            var voice = new VF.Voice({ num_beats: 3, beat_value: 4 });
+            var voice = new VF.Voice({ num_beats: convertedNotes[0].maxbeats, beat_value: 4 });
             voice.addTickables(voices);
 
             // Format and justify the notes to 400 pixels. // no idea what is it for
@@ -138,9 +133,29 @@
             voice.draw(context, stave);
 
             // get the highest and lowest node, so as to determine the transform of the stave
+            let noteheads_d3xn = staveg_d3xn.selectAll('g.vf-notehead')
+            let noteheads_doms = noteheads_d3xn.nodes()
+            let minY = 999, maxY=0
+            noteheads_doms.forEach(d=>{
+                let thehead_d3xn = d3.select(d).select('path')
+                let thepathd = thehead_d3xn.attr('d')
+                
+                // the y position of the head is like 90 in the str M30 90M30..
+                let thestr1 = thepathd.split('M')[1]
+                let theY = parseInt(thestr1.split(' ')[1])
+                // console.log(theY)
+                minY = Math.min(minY, theY)
+                maxY = Math.max(maxY, theY)
+            })
+            
+            let scale = (maxY - minY) / 50 
+            // off set the staveg
+            let x = -2 * scale                , y = (minY - 60) *scale
             // offset for over high/low notes, change scale for both over high and over low notes
-            staveg_d3xn.attr('transform', 'translate(-2, 40)')
-        }
+            staveg_d3xn.attr('transform', d=>{
+                return 'translate(' + x + ',' + y + ')scale(' + scale + ')'
+            })
+        } // function makeStaveNote
 
 
     </script>

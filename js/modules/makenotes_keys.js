@@ -39,28 +39,10 @@ async function addMomentUnits(displaynotes) {
     // // the reason to use div is that we'll need a moment svg within the div
     // //  we cannot use a moment svg directly, as svg itself cannot be move by transfomr-translate unless it is within a div
     // // the reason to use an svg is that it acts as a window, so the g element within can be flexible (bigger than the svg, yet only disply the part within the svg)
-
-
-    // let staveFOR = momentg.append('foreignObject')
-    //     .attrs({ 'width': stavedivdata.width, 'height': stavedivdata.height })
-    //     .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
-
-    let staveg = momentg.append('svg')
-        .attrs({ 'width': stavedivdata.width*10, 'height': stavedivdata.height*10 })
-        .styles({ 'width': stavedivdata.width*10 + 'px', 'height': stavedivdata.height*10 + 'px' })
-        .attr('id', (d, i) => {
-            let idstr = 'stavesvg_right_' + i
-            return idstr
-        })
-
-
-        .append('g')
-        .attr('class', 'staveg')
-        
-    let staveFOR = staveg.append('foreignObject')
-        .attrs({ 'width': stavedivdata.width*4, 'height': stavedivdata.height*4 })
-        .styles({ 'width': stavedivdata.width*4 + 'px', 'height': stavedivdata.height*4 + 'px' })
-    staveFOR.append('xhtml:div')
+    let staveFOR = momentg.append('foreignObject')
+        .attrs({ 'width': stavedivdata.width, 'height': stavedivdata.height })
+        .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
+    let stavedivR = staveFOR.append('xhtml:div')
         .styles(stavedivdata.stdstyles)
         .attrs({ 'class': 'stavediv', 'clef': 'right' })
         .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
@@ -68,13 +50,38 @@ async function addMomentUnits(displaynotes) {
             let idstr = 'stavediv_right_' + i
             return idstr
         })
+    let stavegR = stavedivR.append('svg')
+        .attrs({ 'width': stavedivdata.width, 'height': stavedivdata.height })
+        .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
+        .attr('id', (d, i) => {
+            let idstr = 'stavesvg_right_' + i
+            return idstr
+        })
+        .append('g')
+        .attr('class', 'staveg')
+        .attr('id', (d, i) => {
+            let idstr = 'staveg_right_' + i
+            return idstr
+        })
+
+    stavegR.nodes().forEach(d => {
+        // make stave for the right hand clef
+        let thestaveg_d3xn = d3.select(d)
+        // console.log(thestaveg_d3xn.datum())
+
+        let parentID = thestaveg_d3xn.attr('id')
+        let clef = 'right'
+        let notes = thestaveg_d3xn.datum()[clef]
+        // console.log(notes)
+        if (notes && !isNaN(notes[0].staffpos)) { makeStaveNote(parentID, notes) }
+    })
 
 
     let momentFOR = momentg.append('foreignObject')
         .attrs({ 'width': momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5 }) // attr w/h are for the stupid Safari
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
         .attr('transform', d => {
-            let y = stavedivdata.height * 1.2 +300
+            let y = stavedivdata.height * 1.2
             return 'translate(0, ' + y + ')'
         }) // move down for 200 px
 
@@ -89,10 +96,10 @@ async function addMomentUnits(displaynotes) {
         .attrs({ 'width': stavedivdata.width, 'height': stavedivdata.height })
         .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
         .attr('transform', d => {
-            let y = stavedivdata.height * 1.2 + momentdivdata.maxwidth * 1.5 + 50
+            let y = stavedivdata.height * 1.2 + momentdivdata.maxwidth * 1.5+100
             return 'translate(0, ' + y + ')'
         }) // move down for 200 px
-    staveFOL.append('xhtml:div')
+    let stavedivL = staveFOL.append('xhtml:div')
         .styles(stavedivdata.stdstyles)
         .attrs({ 'class': 'stavediv', 'clef': 'left' })
         .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
@@ -100,13 +107,40 @@ async function addMomentUnits(displaynotes) {
             let idstr = 'stavediv_left_' + i
             return idstr
         })
+    let stavegL = stavedivL.append('svg')
+        .attrs({ 'width': stavedivdata.width, 'height': stavedivdata.height })
+        .styles({ 'width': stavedivdata.width + 'px', 'height': stavedivdata.height + 'px' })
+        .attr('id', (d, i) => {
+            let idstr = 'stavesvg_left_' + i
+            return idstr
+        })
+        .append('g')
+        .attr('class', 'staveg')
+        .attr('id', (d, i) => {
+            let idstr = 'staveg_left_' + i
+            return idstr
+        })
+
+    stavegL.nodes().forEach(d => {
+        // make stave for the right hand clef
+        let thestaveg_d3xn = d3.select(d)
+        // console.log(thestaveg_d3xn.datum())
+
+        let parentID = thestaveg_d3xn.attr('id')
+        let clef = 'left'
+        let notes = thestaveg_d3xn.datum()[clef]
+        // console.log(notes)
+        if (notes && !isNaN(notes[0].staffpos)) { makeStaveNote(parentID, notes) }
+    })
+
+
 
 
     let momentFOL = momentg.append('foreignObject')
         .attrs({ 'width': momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5 })
         .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
         .attr('transform', d => {
-            let y = momentdivdata.maxwidth * 1.5 + stavedivdata.height * 1.2 * 2 + 500
+            let y = momentdivdata.maxwidth * 1.5 + stavedivdata.height * 1.2 * 2 + 100
             return 'translate(0, ' + y + ')'
         }) // move down for 200 px
     let momentdivsL = momentFOL
