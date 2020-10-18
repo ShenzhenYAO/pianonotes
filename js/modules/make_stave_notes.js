@@ -2,6 +2,7 @@
 
 function makeStaveNote(parentID, notes, clef) {
 
+
     // use a g element as the parent node of the vf stave components
     // so that it can be transform to fit the display window
 
@@ -49,54 +50,57 @@ function makeStaveNote(parentID, notes, clef) {
         voices.push(thevoice)
     }) // convertedNotes.forEach
 
-    // console.log(convertedNotes)
+    console.log(convertedNotes)
 
-    // Create a voice in 4/4 and add the notes from above
-    let voice = new VF.Voice({ num_beats: convertedNotes[0].maxbeats, beat_value: 4 });
-    voice.addTickables(voices);
+    if (convertedNotes.length > 0) {
 
-    // Format and justify the notes to 400 pixels. // no idea what is it for
-    let formatter = new VF.Formatter().joinVoices([voice]).format([voice], 300);
+        // Create a voice in 4/4 and add the notes from above
+        let voice = new VF.Voice({ num_beats: convertedNotes[0].maxbeats, beat_value: 4 });
+        voice.addTickables(voices);
 
-    // Render voice
-    voice.draw(context, stave);
+        // Format and justify the notes to 400 pixels. // no idea what is it for
+        let formatter = new VF.Formatter().joinVoices([voice]).format([voice], 300);
 
-   // get the line 1 and line 5, check note's position. no change if all notes within line 1 and line5
-    // scale if the total height (line1, link5, and the note ) exceeds the height betwen line1 and line5
-    let staffline1Ystr1 = staveg_d3xn.select('svg').select('path').attr('d').split('M')[1]
-    let staffline1Y = parseInt(staffline1Ystr1.split(' ')[1])
-    // console.log(staffline1Y)
-    let staffline5Ystr1 = d3.select(staveg_d3xn.select('svg').selectAll('path').nodes()[4]).attr('d').split('M')[1]
-    let staffline5Y = parseInt(staffline5Ystr1.split(' ')[1])
-    // console.log(staffline5Y)
+        // Render voice
+        voice.draw(context, stave);
 
-     // get the highest and lowest node, so as to determine the transform of the stave
-    let noteheads_d3xn = staveg_d3xn.selectAll('g.vf-notehead')
-    let noteheads_doms = noteheads_d3xn.nodes()
-    // console.log(noteheads_doms)
-    let minY = staffline1Y, maxY = staffline5Y
-    noteheads_doms.forEach(d => {
-        let thehead_d3xn = d3.select(d).select('path')
-        let thepathd = thehead_d3xn.attr('d')
-// console.log(thepathd)
-        // the y position of the head is like 90 in the str M30 90M30..
-        let thestr1 = thepathd.split('M')[1]
-        let theY = parseInt(thestr1.split(' ')[1])
-        // console.log(theY)
-        minY = Math.min(minY, theY)
-        maxY = Math.max(maxY, theY)
-    })
+        // get the line 1 and line 5, check note's position. no change if all notes within line 1 and line5
+        // scale if the total height (line1, link5, and the note ) exceeds the height betwen line1 and line5
+        let staffline1Ystr1 = staveg_d3xn.select('svg').select('path').attr('d').split('M')[1]
+        let staffline1Y = parseInt(staffline1Ystr1.split(' ')[1])
+        // console.log(staffline1Y)
+        let staffline5Ystr1 = d3.select(staveg_d3xn.select('svg').selectAll('path').nodes()[4]).attr('d').split('M')[1]
+        let staffline5Y = parseInt(staffline5Ystr1.split(' ')[1])
+        // console.log(staffline5Y)
 
-    // console.log(minY, maxY)
+        // get the highest and lowest node, so as to determine the transform of the stave
+        let noteheads_d3xn = staveg_d3xn.selectAll('g.vf-notehead')
+        let noteheads_doms = noteheads_d3xn.nodes()
+        // console.log(noteheads_doms)
+        let minY = staffline1Y, maxY = staffline5Y
+        noteheads_doms.forEach(d => {
+            let thehead_d3xn = d3.select(d).select('path')
+            let thepathd = thehead_d3xn.attr('d')
+            // console.log(thepathd)
+            // the y position of the head is like 90 in the str M30 90M30..
+            let thestr1 = thepathd.split('M')[1]
+            let theY = parseInt(thestr1.split(' ')[1])
+            // console.log(theY)
+            minY = Math.min(minY, theY)
+            maxY = Math.max(maxY, theY)
+        })
 
-    let scale = 25 /(maxY - minY) 
-    // off set the staveg
-    let x = -2 * scale, y = -15 *scale
-    // console.log(x,y,scale)
-    // offset for over high/low notes, change scale for both over high and over low notes
-    staveg_d3xn.attr('transform', d => {
-        return 'translate(' + x + ',' + y + ')scale(' + scale + ')'
-    })
+        // console.log(minY, maxY)
+
+        let scale = 25 / (maxY - minY)
+        // off set the staveg
+        let x = -2 * scale, y = -15 * scale
+        // console.log(x,y,scale)
+        // offset for over high/low notes, change scale for both over high and over low notes
+        staveg_d3xn.attr('transform', d => {
+            return 'translate(' + x + ',' + y + ')scale(' + scale + ')'
+        })
+    } // if convertTOnes
 } // function makeStaveNote
 
 
@@ -119,22 +123,24 @@ function convertTones(notes, convertedNotes) {
         minbeats = Math.min(minbeats, tmpbeat)
         maxbeats = Math.max(maxbeats, tmpbeat)
         // console.log(minbeats)
-        if (minbeats === 1.5 || minbeats === 0.6 || minbeats === 0.8 || minbeats === 0.8) {minbeats=1; } // bug here, need to deal with the dot situation...
-        if (minbeats === 3.5) {minbeats=2}
         let durationnum = (1 / minbeats) * 4
         // console.log(durationnum)
         // if (durationnum > 1000) {console.log(notes); return;} 
         durationstr = durationnum.toString()
-        // console.log(durationstr)
+        console.log(minbeats, durationstr)
         // 3. if there are remaining beat, carry over to the next run
         if (d.beat - minbeats > 0) {
+            console.log(d.beat)
             notesleft.push({ tone: d.tone, beat: d.beat - minbeats })
         }
 
     }) // notes.forEach
-
+    // the following strange thing is for a bug that vexflow fails to for 0.3, 0.5, 0.6, 0.8, 1.5, 3 etc.
+    if (parseInt(durationstr) !== parseFloat(durationstr) || parseInt(durationstr) === 10 ) 
+        {durationstr = '1', maxbeats='4'
+    }
     let result = { keys: keys, accidentals: accidentals, duration: durationstr, maxbeats: maxbeats }
-    convertedNotes.push(result)
+     convertedNotes.push(result)
     // console.log(convertedNotes)
 
     // if there is remaining beats, do it again

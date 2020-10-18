@@ -1,9 +1,7 @@
 "use strict"
 
-var lnotedivs = [], tmpdiv = undefined;
-var rnotedivs = [];
 // let note_stdobj = datastr_to_stdobj(notesStr);
-let note_stdobj = datastr_to_stdobj(notesStr_lb);
+let note_stdobj = datastr_to_stdobj(notesStr);
 
 const VF = Vex.Flow;
 

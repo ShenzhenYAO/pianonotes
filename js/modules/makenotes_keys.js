@@ -70,10 +70,12 @@ async function addMomentUnits(displaynotes) {
         // console.log(thestaveg_d3xn.datum())
 
         let parentID = thestaveg_d3xn.attr('id')
-        let clef = 'right'
-        let notes = thestaveg_d3xn.datum()[clef]
+        let clef = 'treble'
+        let notes = thestaveg_d3xn.datum().right
         // console.log(notes)
-        if (notes && !isNaN(notes[0].staffpos)) { makeStaveNote(parentID, notes) }
+        if (notes !== null && notes !== undefined && !isNaN(notes[0].staffpos)            ) {
+             makeStaveNote(parentID, notes, clef) 
+            }
     })
 
 
@@ -127,10 +129,11 @@ async function addMomentUnits(displaynotes) {
         // console.log(thestaveg_d3xn.datum())
 
         let parentID = thestaveg_d3xn.attr('id')
-        let clef = 'left'
-        let notes = thestaveg_d3xn.datum()[clef]
-        // console.log(notes)
-        if (notes && !isNaN(notes[0].staffpos)) { makeStaveNote(parentID, notes) }
+        let clef = 'bass'
+        let notes = thestaveg_d3xn.datum().left
+
+        if (notes !== null && notes !== undefined && !isNaN(notes[0].staffpos)) { 
+            makeStaveNote(parentID, notes, clef) }
     })
 
 
