@@ -188,3 +188,14 @@ async function clipboardpaste(text) {
     return resolved
 }//clipboardpaste
 
+// convert a:[ele1, ele2.. ], b:[ele1, ele2] into [[ele1 of a, ele 2 of b], [elel2 of a...] ]
+function zip(a, b) {
+    let results
+    if (a.length > b.length) {
+        results = a.map(function (e, i) { return [e, b[i]] })
+    } else {
+        results = b.map(function (e, i) { return [e, a[i]] })
+    }
+    return results
+} //zip
+

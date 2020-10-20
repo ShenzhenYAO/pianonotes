@@ -1,7 +1,14 @@
 const letternumber_for_staffposition1 = {
     l: 71,
-    r: 69
+    r: 69,
+    bass:71,
+    treble:69
 };
+
+const octaveChangeBase ={
+    bass:2,
+    treble:4
+}
 
 const anchor_A = 65;
 

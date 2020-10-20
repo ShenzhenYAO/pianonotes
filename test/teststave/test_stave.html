@@ -32,6 +32,7 @@
 
     <script>
         // https://github.com/0xfe/vexflow/wiki/The-VexFlow-Tutorial
+        //https://github.com/0xfe/vexflow/wiki/The-VexFlow-FAQ#how-do-i-align-multiple-voices-across-staves
         const VF = Vex.Flow;
 
         let parentID = 'staveg'
@@ -126,8 +127,8 @@
             var voice = new VF.Voice({ num_beats: convertedNotes[0].maxbeats, beat_value: 4 });
             voice.addTickables(voices);
 
-            // Format and justify the notes to 400 pixels. // no idea what is it for
-            var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 300);
+            // Format and justify the notes , the 200 is to keep notes 200 pix away (the space between notes)
+            var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 200);
 
             // Render voice
             voice.draw(context, stave);

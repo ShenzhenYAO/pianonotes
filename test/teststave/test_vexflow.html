@@ -1,0 +1,313 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- for music sheet -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vexflow/3.0.9/vexflow-min.js"
+        integrity="sha512-le/+X9Wjo8roJpCBunTPOGzGGhCqyXsbxgoEwngieMRVDieKxfHusDD6iFJqw8RUGkfj7se7Nc6cf4NbLUPDzA=="
+        crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+    <div id='staveid' sytle="width: 100%; height:100%">
+        <svg sytle="width: 100%; height:100%" width=100% height=100%>
+            <g id='staveg'>
+            </g>
+        </svg>
+    </div>
+
+    <script>
+        //https://github.com/0xfe/vexflow/wiki/The-VexFlow-Tutorial
+        // the following uses easyscore, not great but may be useful for adding ids, and cross-bar ties
+        //https://github.com/0xfe/vexflow/blob/master/tests/bach_tests.js 
+        const VF = Vex.Flow
+        const staveSettings = {
+            parentDomID: 'staveg',
+            clef: 'treble',
+            timeSignature: '4/4'
+        }
+        const beatPerQuaterNote = 1 // one beat for a quaternote
+
+        // =======. make a stave svg, which is the stage for all stave note related components
+        let parentDom = document.getElementById(staveSettings.parentDomID)
+        let staveSVG_vft = makeStaveSvg(parentDom) // a vex flow (vf) object named 't'
+
+        // =======. make a blank stave
+        let staveBounds = { x: 0, y: 0, w: 200 }
+        let stave1_vfe = addBlankStave(staveSVG_vft, staveBounds, staveSettings.clef, staveSettings.timeSignature)
+
+        // ==========make the first stave
+        let setStrict, sumduration = 0
+        // Note: the keys should be sorted from low tone to high. If not sorted, VF will complain but do the sorting for you!
+        let notesgroup1_vfe = [
+            new VF.StaveNote({ clef: 'treble', keys: ['A/4', 'C/5'], duration: '4' }), // 4 represents a quater note. Although the duration of 'q' or 'h' is allowed, it is never a good idea!
+            new VF.StaveNote({ clef: 'treble', keys: ['A/5'], duration: '4' })]
+        // console.log(notesgroup1_vfe) //the grouped notes are vf objects named 'e'
+        drawStaveNotes_v1(stave1_vfe, notesgroup1_vfe, beatPerQuaterNote);
+
+
+        // ==================add a second measure stave right after the first one
+        // this is sooooo dumb. So in deed it is drawing lots of staves, instead of a continuous chapter
+        let staveBounds2 = { x: 200, y: 0, w: 400 } // the first stave ended at x:400
+        let staveid = 'm2'
+        let stave2_vfe = addBlankStave(staveSVG_vft, staveBounds2, null, null, staveid)
+        // console.log(stave2_vfe)
+        // stave2_vfe.attrs.id = 'm2'
+
+        let notesgroup2a_vfe = [
+            new VF.StaveNote({ clef: 'treble', keys: ['A/4', 'C/5'], duration: '4' }), // 4 represents a quater note. Although the duration of 'q' or 'h' is allowed, it is never a good idea!
+            new VF.StaveNote({ clef: 'treble', keys: ['A/5'], duration: '4' })]
+
+        // notes with beam are treated separately
+        let notesgroup2b_beam_vfe = [
+            new VF.StaveNote({ clef: 'treble', keys: ['A/3', 'C/5'], duration: '8' }), // 4 represents a quater note. Although the duration of 'q' or 'h' is allowed, it is never a good idea!
+            new VF.StaveNote({ clef: 'treble', keys: ['A/4'], duration: '8' })]
+
+        let notesgroup2c_tupletbeam_vfe = [
+            new VF.StaveNote({ clef: 'treble', keys: ['A/4', 'C/4'], duration: '8' }) // put A#/4 is useless
+                .addAccidental(0, new VF.Accidental("#")).addDot(0)   // Note: the keys are resorted, and key[0] is C/4 not A/4   
+            , // 4 represents a quater note. Although the duration of 'q' or 'h' is allowed, it is never a good idea!
+            new VF.StaveNote({ clef: 'treble', keys: ['A/4'], duration: '8' }),
+            new VF.StaveNote({ clef: 'treble', keys: ['B/3'], duration: '8' }),
+        ]
+        // add dot, beam, tie, and tuplet
+        let notegroups2 = [
+            { notes: notesgroup2a_vfe, ties: { start: [0, 1], end: [1] } },
+            { notes: notesgroup2b_beam_vfe, beam: 1, ties: { start: [1], end: [0] } },
+            { notes: notesgroup2c_tupletbeam_vfe, beam: 1, tuplet: 1, ties: { start: [2], end: [1] } }
+        ]
+
+        let setStrictOff = 1, notespace = 400
+        drawStaveNotes_v2(stave2_vfe, notegroups2, beatPerQuaterNote, notespace, setStrictOff)
+
+
+
+        // ========================add the third stave
+        // console.log(staveBounds2)
+        let staveBounds3 = { x: staveBounds2.x + staveBounds2.w, y: 0, w: 200 } // the first stave ended at x:400
+        staveid = 'm3'
+        let stave3_vfe = addBlankStave(staveSVG_vft, staveBounds3, null, null, staveid)
+
+        let notesgroup3a_vfe = [
+            new VF.StaveNote({ clef: 'treble', keys: ['A/4[id="m9a"]', 'C/5'], duration: '4' }), // 4 represents a quater note. Although the duration of 'q' or 'h' is allowed, it is never a good idea!
+            new VF.StaveNote({ clef: 'treble', keys: ['A/5'], duration: '4' })]
+
+
+        // add dot, beam, tie, and tuplet
+        let notegroups3 = [
+            { notes: notesgroup3a_vfe, ties: { end: [0] } },
+        ]
+        setStrictOff = 1, notespace = 200
+        drawStaveNotes_v2(stave3_vfe, notegroups3, beatPerQuaterNote, notespace, setStrictOff)
+
+
+        // functions =========================================================
+
+
+        // =======. make a blank stave svg, which is the stage for all stave notes
+        // let parentDom = document.getElementById('staveg')
+        function makeStaveSvg(parentDom) {
+            // 1. make the svg for staves
+            let renderer = new VF.Renderer(parentDom, VF.Renderer.Backends.SVG);
+            // resize, the stave svg
+            // renderer.resize(500, 500);
+            return renderer
+        } //function makeStaveSvg(parentDom)
+
+        // =======. make a blank stave
+        // let staveXYL = {x: 0, y:0, length:200}
+        //         let stave1_vfe = addBlankStave(staveSVG_vft, staveXYL,staveSettings.clef, staveSettings.timeSignature )
+        function addBlankStave(staveSVG_vft, staveBounds, clef, timeSignature, staveid) {
+            //1. do not know what it is for, getContext()...
+            let context = staveSVG_vft.getContext();
+            // 2. define the stave 
+            // a stave is for a bar, or a measure. In the following, it starts from x=0, y=0, with length of 500
+            let stave
+            if (staveBounds) { stave = new VF.Stave(staveBounds.x, staveBounds.y, staveBounds.w) } else {
+                stave = new VF.Stave(0, 0, 500)
+            } // if (staveXYL)
+
+            // 3. add clef and time signature
+            if (clef) { stave.addClef(clef) }
+            if (timeSignature) { stave.addTimeSignature(timeSignature) };
+            // 4. draw the staff line (the empty stave)
+            stave.setContext(context).draw();
+            if (staveid) { stave.attrs.id = staveid }
+            return stave
+        }    // addBlankStave()
+
+
+        // ========. add voices to a stave
+        // let setStrict, sumduration = 0, notespace =200
+        // // Note: the keys should be sorted from low tone to high. If not sorted, VF will complain but do the sorting for you!
+        // let notesgroup1_vfe = [
+        //     new VF.StaveNote({ clef: 'treble', keys: ['A/4', 'C/5'], duration: '4' }), // 4 represents a quater note. Although the duration of 'q' or 'h' is allowed, it is never a good idea!
+        //     new VF.StaveNote({ clef: 'treble', keys: ['A/5'], duration: '4' })]
+        // // console.log(notesgroup1_vfe) //the grouped notes are vf objects named 'e'
+        // drawStaveNotes_v1(stave1_vfe, notesgroup1_vfe, beatPerQuaterNote, notespace);
+
+        function drawStaveNotes_v1(thestave, notesgroup1_vfe, beatPerQuaterNote, notespace) {
+
+            let n_voices = 0
+
+            //0. by default, let beatPerQuaterNote =1 (one beat per quarternote)
+            if (!beatPerQuaterNote) { beatPerQuaterNote = 1 }
+
+            //1. accumulate the durations
+            notesgroup1_vfe.forEach((d, i) => {
+                sumduration = sumduration + parseInt(d.duration) / (4 * beatPerQuaterNote)
+            })
+
+            n_voices = n_voices + notesgroup1_vfe.length
+
+            //2. define the number of beats, and beat value in a measure
+            let measure_vfe = new VF.Voice({ num_beats: sumduration, beat_value: (4 * beatPerQuaterNote) }); // 1 beat in a measure (bar), a quarter note (4) as a beat
+            // console.log(measure_vfe) // this is confusing. measure is also named 'e' of vf object
+
+            //3. voice.addTickables(voices.concat(voices2)).setStrict(false);
+            measure_vfe.addTickables(notesgroup1_vfe)
+
+            //4. determien whether to turn off the setStrict(). When turned off, VF does not report error and stop even if there is no enough beats in a measure (bar). However, if there are too many beats than a bar should have, VF will report error and halter
+            if (setStrict) { measure_vfe.setStrict(false) }
+
+            // format, don't know..., the last argument is to set the distance between notes
+            if (!notespace) { notespace = 100 }
+            thestave.bounds.w = notespace * n_voices
+
+            // get the context, don't know what it does, but seems a must
+            let context = staveSVG_vft.getContext();
+
+            let formatter = new VF.Formatter().joinVoices([measure_vfe]).format([measure_vfe], notespace);
+
+            measure_vfe.draw(context, thestave);
+
+            // seems trouble to redefine the stave width, the following redraws the stave, but there are two end bars
+            // might have to calculate the length before getting started! dumb!@
+            // let newwidth = notespace * (n_voices-1)
+            // // console.log(newwidth)
+            // thestave.setWidth(newwidth).draw()
+        } //drawStaveNotes_v1
+
+
+        // add notes, taking care of accidentals, dots, beams, tuplets, ties within measure. ties across measures are not correct
+        function drawStaveNotes_v2(staveSVG_vft, thestave, notegroups, beatPerQuaterNote, notespace, setStrictOff) {
+
+            // console.log(notegroups)
+
+            let n_voices = 0, sumbeats = 0, beams = [], tuplets = [], allStaveNotes, tiestarts = [],
+                tieends = [], voiceIndex = -1
+            //0. by default, let beatPerQuaterNote =1 (one beat per quarternote)
+            if (!beatPerQuaterNote) { beatPerQuaterNote = 1 }
+
+            // loop for each notegroups
+            notegroups.forEach((d, i) => {
+
+                let thenotegroup = d
+                if (i === 0) {
+                    allStaveNotes = thenotegroup.notes
+                } else {
+                    allStaveNotes = allStaveNotes.concat(thenotegroup.notes)
+                }
+
+                //1. accumulate the durations
+                thenotegroup.notes.forEach((d, i) => {
+                    console.log(d)
+                    voiceIndex++;
+                    // console.log(d.duration)
+                    sumbeats = sumbeats + (4 * beatPerQuaterNote) / parseInt(d.duration)
+                })
+
+                //check if to add beam
+                if (thenotegroup.beam) {
+                    let beam = new VF.Beam(thenotegroup.notes)
+                    beams.push(beam)
+                }
+                // Create a voice in 4/4 and add the notes from above
+                if (thenotegroup.tuplet) {
+                    let tuplet = new VF.Tuplet(thenotegroup.notes)
+                    tuplets.push(tuplet)
+                }
+                // check ties, the idea is to 
+                if (thenotegroup.ties) {
+                    // console.log(thenotegroup.ties)
+                    if (thenotegroup.ties.start) {
+                        thenotegroup.ties.start.forEach(e => {
+                            tiestarts.push(n_voices + e)
+                        })
+                    } //
+                    if (thenotegroup.ties.end) {
+                        thenotegroup.ties.end.forEach(e => {
+                            // console.log(n_voices, e)
+                            tieends.push(n_voices + e)
+                        })
+                    } //
+                }
+                n_voices = n_voices + thenotegroup.notes.length
+            }) //notegroups.forEach
+
+            //2. define the number of beats, and beat value in a measure
+            let measure_vfe = new VF.Voice({ num_beats: sumbeats, beat_value: (4 * beatPerQuaterNote) }); // 1 beat in a measure (bar), a quarter note (4) as a beat
+            // console.log(measure_vfe) // this is confusing. measure is also named 'e' of vf object
+
+            // console.log(allStaveNotes)
+
+            //3. voice.addTickables(voices.concat(voices2)).setStrict(false);
+            measure_vfe.addTickables(allStaveNotes)
+
+            //4. determien whether to turn off the setStrict(). When turned off, VF does not report error and stop even if there is no enough beats in a measure (bar). However, if there are too many beats than a bar should have, VF will report error and halter
+            if (setStrictOff) { measure_vfe.setStrict(false) }
+
+            // get the context, don't know what it does, but seems a must
+            let context = staveSVG_vft.getContext();
+
+            let formatter = new VF.Formatter().joinVoices([measure_vfe]).format([measure_vfe], notespace);
+
+            // draw the note heads
+            measure_vfe.draw(context, thestave);
+            // draw the beams
+            if (beams.length > 0) {
+                beams.forEach(beam => {
+                    beam.setContext(context).draw()
+                })
+            } // if beams
+            // draw tuplets
+            if (tuplets.length > 0) {
+                tuplets.forEach(t => {
+                    t.setContext(context).draw()
+                })
+            } // if beams
+
+            if (tiestarts.length > 0) {
+                tiestarts.forEach((f, j) => {
+                    theTie = new VF.StaveTie({
+                        first_note: allStaveNotes[f],
+                        last_note: allStaveNotes[tieends[j]],
+                        first_indices: [0],
+                        last_indices: [0]
+                    })
+                    theTie.setContext(context).draw()
+
+                }) //  tiestarts.forEach
+            } // if tiestarts
+
+            // add my node data to it
+            allStaveNotes.forEach((d, i) => {
+                d.attrs.id = thestave.attrs.id + '_' + i
+                d._mydata = []
+            })
+
+        } //drawStaveNotes_v2
+
+
+
+
+    </script>
+
+</body>
+
+</html>

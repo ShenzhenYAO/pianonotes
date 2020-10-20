@@ -58,7 +58,8 @@ function makeStaveNote(parentID, notes, clef) {
         let voice = new VF.Voice({ num_beats: convertedNotes[0].maxbeats, beat_value: 4 });
         voice.addTickables(voices);
 
-        // Format and justify the notes to 400 pixels. // no idea what is it for
+        // Format and justify the notes , the 200 is to keep notes 200 pix away (the space between notes)
+        //https://github.com/0xfe/vexflow/wiki/The-VexFlow-FAQ#how-do-i-align-multiple-voices-across-staves
         let formatter = new VF.Formatter().joinVoices([voice]).format([voice], 300);
 
         // Render voice

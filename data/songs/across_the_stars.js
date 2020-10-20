@@ -1,4 +1,4 @@
-const notesStr =`
+const notesStr_acrossstars =`
 l5,1,3
 l6,1
 l5,2

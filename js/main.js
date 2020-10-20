@@ -1,7 +1,7 @@
 "use strict"
 
 // let note_stdobj = datastr_to_stdobj(notesStr);
-let note_stdobj = datastr_to_stdobj(notesStr);
+let note_stdobj = datastr_to_stdobj(notesStr_acrossstars);
 
 const VF = Vex.Flow;
 
