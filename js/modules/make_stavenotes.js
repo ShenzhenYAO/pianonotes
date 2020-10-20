@@ -21,6 +21,7 @@ function makeVFNoteData(indata) {
     // however, if the beat is a multiple of 3 (e.g., 0.3, 0.6, 1.5, 3, etc), change the duration to 2/3 of beat, and add a dot
     if ((indata.data.beat * 1000000) / 3 === parseInt((indata.data.beat * 1000000) / 3)) {
         duration = 1 / (indata.data.beat * 2 / 3) * (beatperquarternote * 4)
+        duration = duration.toString() + 'd'
         dot = 1
     }
     // also, for tuplets, the duration is 8 for t1, 16 for t0.5, etc
@@ -202,7 +203,7 @@ function makeVFMeasuresByClef(indata){
 // loop for each clef, and measure, draw stavenotes
 // let vfstaves = addBlankStavesByClef(vfmeasures)
 function addBlankStavesByClef(vfmeasures, staveSVG_vft ){
-    let staveX = 0, staveY1 = 0, staveY2 = staveY1 + 300
+    let staveX = 0, staveY1 = 50, staveY2 = staveY1 + 300
     let staveWidth, vfstaves=[]
     vfmeasures.forEach((d, i) => {
         // console.log('==========', d.measure)
@@ -214,24 +215,31 @@ function addBlankStavesByClef(vfmeasures, staveSVG_vft ){
         if (i === 0) {
             let tmp={}
             tmp.measure = d.measure
-            staveWidth = (maxLength -1) * notespace, staveBounds
+            staveWidth = 400 //(maxLength -1) * notespace, staveBounds
             staveBounds = { x: staveX, y: staveY1, w: staveWidth } 
-            tmp.treble = addBlankStave(staveSVG_vft, staveBounds, d.treble[0].clef, timeSignature)
+            let staveid =  d.measure + '_' +  d.treble[0].clef
+            tmp.treble = addBlankStave(staveSVG_vft, staveBounds, d.treble[0].clef, timeSignature, staveid)
             staveBounds = { x: staveX, y: staveY2, w: staveWidth }
-            tmp.bass = addBlankStave(staveSVG_vft, staveBounds, d.bass[0].clef, timeSignature)
+            staveid =  d.measure + '_' +  d.bass[0].clef
+            tmp.bass = addBlankStave(staveSVG_vft, staveBounds, d.bass[0].clef, timeSignature, staveid)
             vfstaves.push(tmp)
         } else {
+            let timesig
+            if (i ===2){timesig = '3/4'} else {timesig = null}
             let tmp={}
             tmp.measure = d.measure
             staveX = staveX + staveWidth // based on x and w of last time
-            staveWidth = (maxLength -1) * notespace, staveBounds
+            staveWidth = 400 // (maxLength -1) * notespace, staveBounds
             staveBounds = { x: staveX, y: staveY1, w: staveWidth }
-            tmp.treble =addBlankStave(staveSVG_vft, staveBounds)
+            let staveid =  d.measure + '_' +  d.treble[0].clef
+            tmp.treble =addBlankStave(staveSVG_vft, staveBounds, null, timesig, staveid)
             staveBounds = { x: staveX, y: staveY2, w: staveWidth }
-            tmp.bass =addBlankStave(staveSVG_vft, staveBounds)
+            staveid =  d.measure + '_' +  d.bass[0].clef
+            tmp.bass =addBlankStave(staveSVG_vft, staveBounds, null, timesig, staveid)
             vfstaves.push(tmp)
         }
     }) // each clef
+    // console.log(vfstaves)
     return vfstaves
 } // addBlankStavesByClef
 

@@ -107,7 +107,6 @@ var statusdiv = d3.select('div#statusdiv'), astr
     // console.log(vfstaves)
 
 
-    let startX = 0
     vfmeasures.forEach((d, i) => {
         let vfnotes, stavenotes, stavenotegroups, setStrictOff 
 
@@ -115,6 +114,7 @@ var statusdiv = d3.select('div#statusdiv'), astr
         vfnotes = d.treble
         let trebleGroup, staveTreble
         if (d.treble) {
+
             // arrange vfnotes into a collection of vfstavenotes, indicate addAccidentals, dots, separate notes requiring beams or tuplets
             stavenotes = makeStaveNotes(vfnotes)
             
@@ -153,23 +153,30 @@ var statusdiv = d3.select('div#statusdiv'), astr
         voiceBass.addTickables(notesBass).setStave(staveBass);
 
         var formatter = new Vex.Flow.Formatter();
+        
 
         // Make sure the staves have the same starting point for notes
-        // var startX = Math.max(staveTreble.getNoteStartX(), staveBass.getNoteStartX());
+        // var startX = Math.max(staveTreble.getNoteStartX(), staveBass.getNoteStartX()) ;
+        let startX = voiceTreble.stave.bounds.x
         staveTreble.setNoteStartX(startX);
         staveBass.setNoteStartX(startX);
-        // console.log(startX)
-
+  
         // the treble and bass are joined independently but formatted together
         // console.log(voiceTreble)
         formatter.joinVoices([voiceTreble]);
         formatter.joinVoices([voiceBass]);
-        formatter.format([voiceTreble, voiceBass], voiceTreble.stave.bounds.w);
-
+        let stave_length =voiceTreble.stave.bounds.w 
+        // let staveX = voiceTreble.stave.bounds.x
         let ctx = staveSVG_vft.getContext(); // or context
 
+        // console.log(startX, staveX, stave_length)
+        formatter.format([voiceTreble, voiceBass], stave_length - startX); // the example is not right at all! stave_length - (startX - staveX)
+        //let formatter = new VF.Formatter().joinVoices([voiceTreble]).format([measure_vfe], notespace);
+        
+        
         voiceTreble.setContext(ctx).draw();
         voiceBass.setContext(ctx).draw();
+
 
         // add tuplets and beams
         if (trebleGroup.tuplets.length > 0) {
@@ -194,9 +201,10 @@ var statusdiv = d3.select('div#statusdiv'), astr
         } // if beams
         
         // update the startX position
-        startX = voiceTreble.stave.end_x -50
+        // console.log(voiceTreble.stave.end_x, voiceTreble.stave.bounds.x, voiceTreble.stave.bounds.w)
+        // startX = voiceTreble.stave.end_x 
 
-    })
+    }) // vfmeasures.forEach((d, i)
 
 
 
