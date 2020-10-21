@@ -215,7 +215,7 @@ function addBlankStavesByClef(vfmeasures, staveSVG_vft ){
         if (i === 0) {
             let tmp={}
             tmp.measure = d.measure
-            staveWidth = 400 //(maxLength -1) * notespace, staveBounds
+            staveWidth = 300 //(maxLength -1) * notespace, staveBounds
             staveBounds = { x: staveX, y: staveY1, w: staveWidth } 
             let staveid =  d.measure + '_' +  d.treble[0].clef
             tmp.treble = addBlankStave(staveSVG_vft, staveBounds, d.treble[0].clef, timeSignature, staveid)
@@ -229,7 +229,7 @@ function addBlankStavesByClef(vfmeasures, staveSVG_vft ){
             let tmp={}
             tmp.measure = d.measure
             staveX = staveX + staveWidth // based on x and w of last time
-            staveWidth = 400 // (maxLength -1) * notespace, staveBounds
+            staveWidth = 300 // (maxLength -1) * notespace, staveBounds
             staveBounds = { x: staveX, y: staveY1, w: staveWidth }
             let staveid =  d.measure + '_' +  d.treble[0].clef
             tmp.treble =addBlankStave(staveSVG_vft, staveBounds, null, timesig, staveid)
@@ -407,3 +407,103 @@ function makeAllStaveNotegroupsInAMeasure( thestave, notegroups, beatPerQuaterNo
     return {allgroups:allStaveNotes, measure:measure_vfe, tuplets:tuplets, beams:beams }
 
 } //makeAllStaveNotegroupsInAMeasure
+
+
+// draw stave notes by measure and by clef
+function drawStaveNotes(staveSVG_vft , vfmeasures, vfstaves) {
+    // loop for each measure
+    vfmeasures.forEach((d, i) => {
+        let vfnotes, stavenotes, stavenotegroups, setStrictOff
+
+        //treble
+        vfnotes = d.treble
+        let trebleGroup, staveTreble
+        if (d.treble) {
+
+            // arrange vfnotes into a collection of vfstavenotes, indicate addAccidentals, dots, separate notes requiring beams or tuplets
+            stavenotes = makeStaveNotes(vfnotes)
+
+            // group stavenotes according to group number, indicate type of the group(plain, beam, or tuplet)
+            stavenotegroups = makeStaveNoteGroups(stavenotes)
+            // draw notes
+            setStrictOff = 1
+            staveTreble = vfstaves[i].treble
+            trebleGroup = makeAllStaveNotegroupsInAMeasure(staveTreble, stavenotegroups, beatperquarternote, setStrictOff)
+        }
+
+        //bass
+        vfnotes = d.bass
+        // console.log(d.bass)
+        let bassGroup, staveBass
+        if (d.bass) {
+            // arrange vfnotes into a collection of vfstavenotes, indicate addAccidentals, dots, separate notes requiring beams or tuplets
+            stavenotes = makeStaveNotes(vfnotes)
+            // group stavenotes according to group number, indicate type of the group(plain, beam, or tuplet)
+            stavenotegroups = makeStaveNoteGroups(stavenotes)
+            // draw notes
+            setStrictOff = 1
+            staveBass = vfstaves[i].bass
+            bassGroup = makeAllStaveNotegroupsInAMeasure(staveBass, stavenotegroups, beatperquarternote, setStrictOff)
+        }
+
+        // https://github.com/0xfe/vexflow/wiki/The-VexFlow-FAQ#how-do-i-align-multiple-voices-across-staves
+
+        let voiceTreble = trebleGroup.measure
+        let voiceBass = bassGroup.measure
+
+        let notesTreble = trebleGroup.allgroups
+        let notesBass = bassGroup.allgroups
+
+        // addTickables
+        voiceTreble.addTickables(notesTreble).setStave(staveTreble);
+        voiceBass.addTickables(notesBass).setStave(staveBass);
+
+        // Make sure the staves have the same starting point for notes
+        // var startX = Math.max(staveTreble.getNoteStartX(), staveBass.getNoteStartX()) ;
+        let startX = voiceTreble.stave.bounds.x
+        staveTreble.setNoteStartX(startX);
+        staveBass.setNoteStartX(startX);
+        
+        // format notes (position of notes, not much useful)
+        var formatter = new Vex.Flow.Formatter();
+        // the treble and bass are joined independently but formatted together
+        // console.log(voiceTreble)
+        formatter.joinVoices([voiceTreble]);
+        formatter.joinVoices([voiceBass]);
+        let stave_length = voiceTreble.stave.bounds.w
+        // let staveX = voiceTreble.stave.bounds.x
+        let ctx = staveSVG_vft.getContext(); // or context
+        // console.log(startX, staveX, stave_length)
+        formatter.format([voiceTreble, voiceBass], stave_length - startX); // the example is not right at all! stave_length - (startX - staveX)
+        //let formatter = new VF.Formatter().joinVoices([voiceTreble]).format([measure_vfe], notespace);
+
+        // draw stavenotes
+        voiceTreble.setContext(ctx).draw();
+        voiceBass.setContext(ctx).draw();
+
+
+        // add tuplets and beams
+        if (trebleGroup.tuplets.length > 0) {
+            trebleGroup.tuplets.forEach(tuplet => {
+                tuplet.setContext(ctx).draw()
+            })
+        } // if tuplets
+        if (trebleGroup.beams.length > 0) {
+            trebleGroup.beams.forEach(beam => {
+                beam.setContext(ctx).draw()
+            })
+        } // if beams
+        if (bassGroup.tuplets.length > 0) {
+            bassGroup.tuplets.forEach(tuplet => {
+                tuplet.setContext(ctx).draw()
+            })
+        } // if tuplets
+        if (bassGroup.beams.length > 0) {
+            bassGroup.beams.forEach(beam => {
+                beam.setContext(ctx).draw()
+            })
+        } // if beams
+
+    }) // vfmeasures.forEach((d, i)
+
+} //drawStaveNotes
