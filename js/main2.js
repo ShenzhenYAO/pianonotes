@@ -46,9 +46,6 @@ var statusdiv = d3.select('div#statusdiv'), astr
     let stdnotesdata_clefs = convertToStdNotes(notesdate_clefs)
     // console.log(stdnotesdata_clefs)
 
-    // 3. draw stave notes
-    let tmpdata = stdnotesdata_clefs[0].contents.slice(0, 6)
-    // console.log(tmpdata)
 
     //4. draw stave notes
     //4a. in the bigg, add a stavenoteg 
@@ -79,12 +76,12 @@ var statusdiv = d3.select('div#statusdiv'), astr
     // console.log(stdnotesdata_clefs)
 
     // fold notes of the same line together
-    let stdnotesdata_clefs1 = makeVFStaveNotes(stdnotesdata_clefs)
-    // console.log(stdnotesdata_clefs1)
+    let stdnotesdata_clefs_sameline = makeVFStaveNotes(stdnotesdata_clefs)
+    // console.log(stdnotesdata_clefs_sameline)
 
     // fold stavenotes of the same measure (bar)
-    let stdnotesdata_clefs2 = makeVFMeasures(stdnotesdata_clefs1)
-    // console.log(stdnotesdata_clefs2)
+    let stdnotesdata_clefs_samemeasure = makeVFMeasures(stdnotesdata_clefs_sameline)
+    // console.log(stdnotesdata_clefs_samemeasure)
 
     // need to align the staveBounds.x of each measure in differnt clefs
     // e.g., for treble and bass, the first stave may have different lenth
@@ -94,8 +91,8 @@ var statusdiv = d3.select('div#statusdiv'), astr
     // That way vex flow will auto align the notes...
 
     // convert it as [[{measure 0, vfnotes (bass)}, {measure 0, vfnotes (teble)}], {measure 1, ...}]
-    let treble = stdnotesdata_clefs2[0].vfmeasures
-    let bass = stdnotesdata_clefs2[1].vfmeasures
+    let treble = stdnotesdata_clefs_samemeasure[0].vfmeasures
+    let bass = stdnotesdata_clefs_samemeasure[1].vfmeasures
     let vfmeasures1 = zip(treble, bass)
 
     // convert it as [{measure: 0, treble:[vfnotes1, 2 ...], bass:}]
@@ -107,7 +104,69 @@ var statusdiv = d3.select('div#statusdiv'), astr
     // console.log(vfstaves)
 
     //draw stave notes by measure and by clef
-    drawStaveNotes(staveSVG_vft, vfmeasures, vfstaves)    
+    let staveNoteGroups = drawStaveNotes(staveSVG_vft, vfmeasures, vfstaves)
+    // console.log(staveNoteGroups) // the result contains two clefs, each with stavenote data grouped by measures
+
+    // the following is to link data to the individual notehead doms
+    /*********************************************************************************** */
+
+
+    //1. unfold the staveNoteGroups by clef down to individual note level
+    let allStaveNoteData = { treble: [], bass: [] }
+    allStaveNoteData.treble = makeStaveNoteArrayByClef(staveNoteGroups, 'treble')
+    allStaveNoteData.bass = makeStaveNoteArrayByClef(staveNoteGroups, 'bass')
+    // console.log(allStaveNoteData)
+
+
+    // link data to node heads
+
+    //The stavenote are unit of notes to be played at the same time
+    // They have ids that are specified in macro makeAllStaveNotegroupsInAMeasure()
+    // each stavenote has children dom g elements as note heads
+    // these note heads can be link to individual data (both vf stavenote data, and original data)
+    // with the linked data, we can draw piano icons, and play sound. 
+
+    //2.  get stavenote g elements
+    let vfstavenotesg = d3.selectAll('g.vf-stavenote')
+    // console.log(vfstavenotesg)
+    // for each stavenot element, get their meausre number, clef, and note group order number
+    let noteheads_dom = getStaveNoteheadGDoms(vfstavenotesg)
+    // console.log(noteheads_dom)
+
+    // now zip the stavenote data and the g dome together, and make a collection of all notes with data and element
+    // merge song data into anarray
+    let notedata = []
+    notedata = mergeNoteData(allStaveNoteData, 'treble', notedata)
+    notedata = mergeNoteData(allStaveNoteData, 'bass', notedata)
+
+    // merge song notehead doms
+    let notedoms = []
+    notedoms = mergeNoteheadDoms(noteheads_dom, 'treble', notedoms)
+    notedoms = mergeNoteheadDoms(noteheads_dom, 'bass', notedoms)
+    // console.log(notedoms)
+
+    // get xy coordinate of the notedoms, and add as .x .y property
+    notedoms = addNoteheadDomXY(notedoms)
+
+    // merge data and doms into thesong
+    let theSong = makeTheSong(notedata, notedoms)
+    console.log(theSong)
+
+    /**so far, the doms and the data are lined up */
+
+    // the above is to link data to the individual notehead doms
+    /*********************************************************************************** */
+
+
+
+    // part two add the piano icons
+    let parentDOM = d3.select('g#bigg').node()
+    let trebleData = stdnotesdata_clefs_samemeasure[0].contents
+    let measureGs = makeMeasureGs(parentDOM, trebleData)
+    // console.log(measureGs)
+
+
+
 
 })()
 

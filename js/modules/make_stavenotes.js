@@ -34,18 +34,18 @@ function makeVFNoteData(indata) {
         accidentals = indata.data.accidentals.replace(/s/g, '#')
         accidentals = accidentals.replace(/f/g, 'b')
     }
-    
+
     indata.data.vfdata = {}
     indata.data.vfdata.dot = dot
     indata.data.vfdata.clef = clef
     indata.data.vfdata.key = key
     indata.data.vfdata.duration = duration.toString()
     // finally if toneletter is R, let key = b/4, and let duration like '8r'
-    if (indata.data.toneletter === 'R') { 
-        if (clef === 'treble') {        indata.data.vfdata.key='b/4'; }
-        else {indata.data.vfdata.key='d/3'; }
-        indata.data.vfdata.duration =duration.toString() + 'r'
-     }
+    if (indata.data.toneletter === 'R') {
+        if (clef === 'treble') { indata.data.vfdata.key = 'b/4'; }
+        else { indata.data.vfdata.key = 'd/3'; }
+        indata.data.vfdata.duration = duration.toString() + 'r'
+    }
     indata.data.vfdata.accidentals = accidentals
     indata.data.vfdata.beam = indata.data.beam
     indata.data.vfdata.tuplet = indata.data.tuplet
@@ -81,12 +81,12 @@ function makeVFStaveNotes(stdnotesdata_clefs) {
             }
             if (previousDataline === e.dataline) {
                 vftmp.vfkeysdata.push({ letternum: e.data.vfdata.letternum, key: e.data.vfdata.key, accidentals: e.data.vfdata.accidentals, dot: e.data.vfdata.dot, data: e.data })
-                
+
                 vftmp.vfkeys = vftmp.vfkeysdata.map(x => x.key)
                 vftmp.vfaccidentals = vftmp.vfkeysdata.map(x => x.accidentals)
                 vftmp.vfdots = vftmp.vfkeysdata.map(x => x.dot)
-                vftmp.data = vftmp.vfkeysdata.map(x => x.data)           
-            
+                vftmp.data = vftmp.vfkeysdata.map(x => x.data)
+
             } else {
                 // console.log(vftmp)
                 // need to sort the keys by letter number, so that the key of lower level comes first
@@ -180,20 +180,20 @@ function addBlankStave(staveSVG_vft, staveBounds, clef, timeSignature, staveid) 
 }    // addBlankStave()
 
 // convert it as [{measure: 0, treble:[vfnotes1, 2 ...], bass:}]
-function makeVFMeasuresByClef(indata){
+function makeVFMeasuresByClef(indata) {
     let result = []
-    indata.forEach(d=>{
+    indata.forEach(d => {
         // console.log(d)
-        let tmp={}
+        let tmp = {}
         tmp.measure = d[0].measure
-        if(d[0]) {
-            let key0 = d[0].vfnotes[0].clef 
-        tmp[key0] = d[0].vfnotes
+        if (d[0]) {
+            let key0 = d[0].vfnotes[0].clef
+            tmp[key0] = d[0].vfnotes
         }
-        if(d[1]){
-           let key1 = d[1].vfnotes[0].clef 
-        tmp[key1] = d[1].vfnotes 
-        }               
+        if (d[1]) {
+            let key1 = d[1].vfnotes[0].clef
+            tmp[key1] = d[1].vfnotes
+        }
         result.push(tmp)
     }) // vfmeasures1 for each
     return result
@@ -202,9 +202,9 @@ function makeVFMeasuresByClef(indata){
 
 // loop for each clef, and measure, draw stavenotes
 // let vfstaves = addBlankStavesByClef(vfmeasures)
-function addBlankStavesByClef(vfmeasures, staveSVG_vft ){
+function addBlankStavesByClef(vfmeasures, staveSVG_vft) {
     let staveX = 0, staveY1 = 50, staveY2 = staveY1 + 300
-    let staveWidth, vfstaves=[]
+    let staveWidth, vfstaves = []
     vfmeasures.forEach((d, i) => {
         // console.log('==========', d.measure)
         //determine the stave width, which is the max length of treble/bass vfnotes
@@ -213,29 +213,29 @@ function addBlankStavesByClef(vfmeasures, staveSVG_vft ){
         let maxLength = Math.max(length_treblevfnotes, length_bassvfnotes)
         let staveBounds
         if (i === 0) {
-            let tmp={}
+            let tmp = {}
             tmp.measure = d.measure
             staveWidth = 300 //(maxLength -1) * notespace, staveBounds
-            staveBounds = { x: staveX, y: staveY1, w: staveWidth } 
-            let staveid =  d.measure + '_' +  d.treble[0].clef
+            staveBounds = { x: staveX, y: staveY1, w: staveWidth }
+            let staveid = d.measure + '_' + d.treble[0].clef
             tmp.treble = addBlankStave(staveSVG_vft, staveBounds, d.treble[0].clef, timeSignature, staveid)
             staveBounds = { x: staveX, y: staveY2, w: staveWidth }
-            staveid =  d.measure + '_' +  d.bass[0].clef
+            staveid = d.measure + '_' + d.bass[0].clef
             tmp.bass = addBlankStave(staveSVG_vft, staveBounds, d.bass[0].clef, timeSignature, staveid)
             vfstaves.push(tmp)
         } else {
             let timesig
-            if (i ===2){timesig = '3/4'} else {timesig = null}
-            let tmp={}
+            if (i === 2) { timesig = '3/4' } else { timesig = null }
+            let tmp = {}
             tmp.measure = d.measure
             staveX = staveX + staveWidth // based on x and w of last time
             staveWidth = 300 // (maxLength -1) * notespace, staveBounds
             staveBounds = { x: staveX, y: staveY1, w: staveWidth }
-            let staveid =  d.measure + '_' +  d.treble[0].clef
-            tmp.treble =addBlankStave(staveSVG_vft, staveBounds, null, timesig, staveid)
+            let staveid = d.measure + '_' + d.treble[0].clef
+            tmp.treble = addBlankStave(staveSVG_vft, staveBounds, null, timesig, staveid)
             staveBounds = { x: staveX, y: staveY2, w: staveWidth }
-            staveid =  d.measure + '_' +  d.bass[0].clef
-            tmp.bass =addBlankStave(staveSVG_vft, staveBounds, null, timesig, staveid)
+            staveid = d.measure + '_' + d.bass[0].clef
+            tmp.bass = addBlankStave(staveSVG_vft, staveBounds, null, timesig, staveid)
             vfstaves.push(tmp)
         }
     }) // each clef
@@ -260,13 +260,13 @@ function makeStaveNotes(vfnotes) {
         // 2. add accidentals, there are multiple notes in a set of stavenote, each note in the stavenote may have different accidental setting
         if (d.vfaccidentals) {
             d.vfaccidentals.forEach((e, j) => {
-                if (e) {stavenote.addAccidental(j, new VF.Accidental(e))}
+                if (e) { stavenote.addAccidental(j, new VF.Accidental(e)) }
             })
         } // if accidentals
         if (d.vfdots) {
             // console.log(d.vfdots)
             d.vfdots.forEach((e, j) => {
-                if(e) {stavenote.addDot(j)}
+                if (e) { stavenote.addDot(j) }
             })
         } // if dots
 
@@ -275,7 +275,7 @@ function makeStaveNotes(vfnotes) {
 
         // classify notes into plain, beamed, or tuplet groups, with note group number
         let beamstr
-        if (d.beam) {beamstr= d.beam.toString()}
+        if (d.beam) { beamstr = d.beam.toString() }
         let curnotegrouptype = beamstr + d.tuplet
         // console.log(d, curnotegrouptype, prenotegrouptype)
         if (prenotegrouptype !== curnotegrouptype) {
@@ -298,33 +298,33 @@ function makeStaveNotes(vfnotes) {
 
 // group stavenotes according to group number, indicate type of the group(plain, beam, or tuplet)
 // let stavenotegroups = makeStaveNoteGroups(stavenotes)
-function makeStaveNoteGroups(stavenotes){
-    let notegroups =[], thenotegroup=[]
+function makeStaveNoteGroups(stavenotes) {
+    let notegroups = [], thenotegroup = []
     let prenotegroupnumber = 0
     let beam, tuplet
-    stavenotes.forEach(d=>{
+    stavenotes.forEach(d => {
         // console.log(d)
         if (prenotegroupnumber === d.notegroupnumber) {
             thenotegroup.push(d.notes)
-            if (d.tuplet) {tuplet =1}
-            if(d.beam) {beam=1}
+            if (d.tuplet) { tuplet = 1 }
+            if (d.beam) { beam = 1 }
         } else {
-            prenotegroupnumber= d.notegroupnumber
-            notegroups.push({notes: thenotegroup, beam: beam, tuplet:tuplet})
-            thenotegroup =[d.notes]
+            prenotegroupnumber = d.notegroupnumber
+            notegroups.push({ notes: thenotegroup, beam: beam, tuplet: tuplet })
+            thenotegroup = [d.notes]
             tuplet = d.tuplet
             beam = d.beam
         } // if notegroup number changes
     }) //for each stavenote
     // push the lastnotegroup 
-    notegroups.push({notes: thenotegroup, beam: beam, tuplet:tuplet})
+    notegroups.push({ notes: thenotegroup, beam: beam, tuplet: tuplet })
     // console.log(notegroups)
     return notegroups
 } // makeStaveNoteGroups
 
 
 // add notes, taking care of accidentals, dots, beams, tuplets, ties within measure. ties across measures are not correct
-function makeAllStaveNotegroupsInAMeasure( thestave, notegroups, beatPerQuaterNote, setStrictOff) {
+function makeAllStaveNotegroupsInAMeasure(thestave, notegroups, beatPerQuaterNote, setStrictOff) {
 
     // console.log(notegroups)
 
@@ -348,15 +348,15 @@ function makeAllStaveNotegroupsInAMeasure( thestave, notegroups, beatPerQuaterNo
 
             let adj_beats1 = 0 // it is a string
             // if dot=1, add 50% to d.duration, this vex flow is not great and need adjustment
-            if (d._mydata.vfdots && d._mydata.vfdots[0] ){adj_beats1 = (4 * beatPerQuaterNote) / parseInt(d.duration) *1/2 }
+            if (d._mydata.vfdots && d._mydata.vfdots[0]) { adj_beats1 = (4 * beatPerQuaterNote) / parseInt(d.duration) * 1 / 2 }
 
-            let adj_beats2=0
+            let adj_beats2 = 0
             // if tuplet=1, reduce 1/3 from the beat by d.duration, this vex flow is not great and need adjustment
-            if (d._mydata.tuplet ){adj_beats2 = -(4 * beatPerQuaterNote) / parseInt(d.duration) *1/3 }
+            if (d._mydata.tuplet) { adj_beats2 = -(4 * beatPerQuaterNote) / parseInt(d.duration) * 1 / 3 }
 
             voiceIndex++;
             // console.log(d.duration)
-            sumbeats = sumbeats +  (4 * beatPerQuaterNote) / parseInt(d.duration) + adj_beats1 + adj_beats2
+            sumbeats = sumbeats + (4 * beatPerQuaterNote) / parseInt(d.duration) + adj_beats1 + adj_beats2
         })
 
         //check if to add beam
@@ -400,17 +400,21 @@ function makeAllStaveNotegroupsInAMeasure( thestave, notegroups, beatPerQuaterNo
     if (setStrictOff) { measure_vfe.setStrict(false) }
 
     // add my node data to it
-    allStaveNotes.forEach((d, i)=>{
+    allStaveNotes.forEach((d, i) => {
         d.attrs.id = thestave.attrs.id + '_' + i
     })
 
-    return {allgroups:allStaveNotes, measure:measure_vfe, tuplets:tuplets, beams:beams }
+    return { allgroups: allStaveNotes, measure: measure_vfe, tuplets: tuplets, beams: beams }
 
 } //makeAllStaveNotegroupsInAMeasure
 
 
 // draw stave notes by measure and by clef
-function drawStaveNotes(staveSVG_vft , vfmeasures, vfstaves) {
+function drawStaveNotes(staveSVG_vft, vfmeasures, vfstaves) {
+    let result = {}
+    result.treble = []
+    result.bass = []
+
     // loop for each measure
     vfmeasures.forEach((d, i) => {
         let vfnotes, stavenotes, stavenotegroups, setStrictOff
@@ -463,7 +467,7 @@ function drawStaveNotes(staveSVG_vft , vfmeasures, vfstaves) {
         let startX = voiceTreble.stave.bounds.x
         staveTreble.setNoteStartX(startX);
         staveBass.setNoteStartX(startX);
-        
+
         // format notes (position of notes, not much useful)
         var formatter = new Vex.Flow.Formatter();
         // the treble and bass are joined independently but formatted together
@@ -480,7 +484,6 @@ function drawStaveNotes(staveSVG_vft , vfmeasures, vfstaves) {
         // draw stavenotes
         voiceTreble.setContext(ctx).draw();
         voiceBass.setContext(ctx).draw();
-
 
         // add tuplets and beams
         if (trebleGroup.tuplets.length > 0) {
@@ -504,6 +507,138 @@ function drawStaveNotes(staveSVG_vft , vfmeasures, vfstaves) {
             })
         } // if beams
 
-    }) // vfmeasures.forEach((d, i)
+        result.treble.push(trebleGroup)
+        result.bass.push(bassGroup)
 
+    }) // vfmeasures.forEach((d, i)
+    return result
 } //drawStaveNotes
+
+
+
+// unfold the staveNoteGroups by clef down to individual note level
+// let allStaveNoteData = {treble:[], bass:[]}
+// allStaveNoteData.treble = makeStaveNoteArrayByClef(staveNoteGroups, 'treble')
+// allStaveNoteData.bass = makeStaveNoteArrayByClef(staveNoteGroups, 'bass')
+function makeStaveNoteArrayByClef(staveNoteGroups, clef) {
+    let result = []
+    staveNoteGroups[clef].forEach((d, measureid) => { // in each measure
+        // loop for each group
+        d.allgroups.forEach((e, groupid) => {
+            // console.log(e)
+            // data in e is correponding to a stavenotes group (i.e., the sound to be played at the same time)
+            // there is a property of _mydata, which contains data such as beat, line number, letter number, etc
+            let dataline = e._mydata.dataline
+
+            // e._mydata.data contains the original data of each note
+            e._mydata.data.forEach((f, noteid) => {
+                // console.log(f)
+                f.dataline = dataline
+                f.clef = clef
+                f.measure = measureid
+                f.stavenotenumber = groupid
+                f.notenumber = noteid
+                result.push(f)
+            }) // each data of _mydata
+        }) // each group (stavenote group)
+    }) // each measure
+
+    return result
+
+} // makeStaveNoteArrayByClef
+
+
+
+// 2. for each stavenot element, get their meausre number, clef, and note group order number
+// let noteheads_dom = getStaveNoteheadGDoms(vfstavenotesg)
+function getStaveNoteheadGDoms(vfstavenotesg) {
+    let noteheads_dom = { treble: [], bass: [] }, noteheadids = []
+    vfstavenotesg.nodes().forEach(d => {
+
+        // console.log(d3.select(d).attr('id'))
+        // the id is like 'vf-14_treble_1', in which 14 is the measure number, treble is the clef, and 1 is the note group order name
+        let theid = d3.select(d).attr('id')
+        theid = theid.replace('vf-', '')
+        let segs = theid.split('_')
+        let measure = segs[0], clef = segs[1], group = segs[2]
+        // console.log(measure, clef, group)
+        // sometimes there are duplicated stavenotes for the same voice, these duplcated ones should be skipped
+
+        // console.log(d3.select(d).select('g.vf-note').selectAll('g.vf-notehead'))
+        // get the g elements with the class name vf-notehead. These elements are for inidviudal notes
+        let noteheadgs = d3.select(d).select('g.vf-note').selectAll('g.vf-notehead')
+        // add id to each notehead g
+
+        noteheadgs.nodes().forEach((e, j) => {
+            let thenoteheadid = 'vfnotehead_' + measure + '_' + clef + '_' + group + '_' + j
+            d3.select(e)
+                .attr('id', thenoteheadid)
+                .attr('measure', measure)
+                .attr('clef', clef)
+                .attr('stavenotenumber', group)
+                .attr('notenumber', j)
+
+            // the thenoteheadids.push(thenoteheadid) only serves to avoid duplicated note heads
+            if (clef === 'treble' && !noteheadids.includes(thenoteheadid)) { noteheads_dom.treble.push(e); noteheadids.push(thenoteheadid) }
+            if (clef === 'bass' && !noteheadids.includes(thenoteheadid)) { noteheads_dom.bass.push(e); noteheadids.push(thenoteheadid) }
+
+        }) // noteheadgs for each
+    }) // vfstavenotesg for each
+    return noteheads_dom
+} // getStaveNoteheadGDoms
+
+// get the xy of the noteheadg_doms
+// the noteheadg contains a path, the starting point of the path indicates its position
+function addNoteheadDomXY(notedoms) {
+    notedoms.forEach(d => {
+        // the first child of the noteheadg is a path
+        let thePathStr = d3.select(d.dom).select('path').attr('d')
+        let thexystr = thePathStr.split('M')[1]
+        // console.log(thexystr.split(' '))
+        d.dom.x = parseFloat(thexystr.split(' ')[0])
+        d.dom.y = parseFloat(thexystr.split(' ')[1])
+    })
+    return notedoms
+} // addNoteheadDomXY
+
+
+// let data=[]
+//     notedata = addDataIntoSongData (allStaveNoteData, 'treble', notedata)
+//     notedata = addDataIntoSongData (allStaveNoteData, 'bass', notedata)
+// merge song data
+function mergeNoteData(allStaveNoteData, clef, result) {
+    allStaveNoteData[clef].forEach(d => {
+        let tmp = { clef: clef }
+        tmp.data = d
+        result.push(tmp)
+    })
+    return result
+} // mergeNoteData
+
+
+// merge song notehead doms
+let notedoms = []
+// notedoms = mergeSongDoms (noteheads_dom, 'treble', notedoms)
+// notedoms = mergeSongDoms (noteheads_dom, 'bass', notedoms)
+// merge song data
+function mergeNoteheadDoms(noteheads_dom, clef, result) {
+    noteheads_dom[clef].forEach(d => {
+        let tmp = { clef: clef }
+        tmp.dom = d
+        result.push(tmp)
+    })
+    return result
+} // mergeNoteheadDoms
+
+
+// merge data and doms into thesong
+//    let theSong = makeTheSong (notedata, notedoms)
+function makeTheSong(notedata, notedoms) {
+    let theSong = []
+    for (let i = 0; i < notedata.length; i++) {
+        let tmp = notedata[i]
+        tmp.dom = notedoms[i].dom
+        theSong.push(tmp)
+    }
+    return theSong
+} // makeTheSong
