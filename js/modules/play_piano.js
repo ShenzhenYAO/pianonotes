@@ -4,66 +4,66 @@ const quarternotesperminute = 105 //76 * 1.5
 
 // const synth = new Tone.Synth().toDestination(); // when play samples, do not need to load Synth or polySynth
 
-d3.select('div#bigdiv').append('button').text('play the song').styles({'margin-top': '30px'})
+d3.select('div#bigdiv').append('button').text('play the song').styles({ 'margin-top': '30px' })
     .on('click', async function () {
 
-    //https://tonejs.github.io/
-    // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        //https://tonejs.github.io/
+        // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 
-    // get slices of nodes to play
-    notes = getNotesToDisplay(allnotes, 0, 200)
-    // console.log(notes)
- 
-    let notesToPlay = prepareNotes(notes)
-    // console.log(notesToPlay)
+        // get slices of nodes to play
+        notes = getNotesToDisplay(allnotes, 0, 200)
+        // console.log(notes)
 
-    // let note = { toneletter: 'C', semi: '', octave: 4, beat: 1 }
-    // await playAnoteAttackRelease(note)
-    // await playAnoteAttackThenRelease(note)
+        let notesToPlay = prepareNotes(notes)
+        // console.log(notesToPlay)
 
-    // let notes = [
-    //     { toneletter: 'C', semi: '', octave: 4, beat: 1 },
-    //     { toneletter: 'E', semi: '', octave: 4, beat: 1 },
-    //     { toneletter: 'G', semi: '', octave: 4, beat: 1 },
-    //     { toneletter: 'C', semi: '', octave: 5, beat: 1 }
-    // ]
-    // await playPolyNotes(notes)
+        // let note = { toneletter: 'C', semi: '', octave: 4, beat: 1 }
+        // await playAnoteAttackRelease(note)
+        // await playAnoteAttackThenRelease(note)
 
-    // play an mp3 sample
-    // let url = 'data/instruments/piano/c4.mp3'
-    // playSample(url)
+        // let notes = [
+        //     { toneletter: 'C', semi: '', octave: 4, beat: 1 },
+        //     { toneletter: 'E', semi: '', octave: 4, beat: 1 },
+        //     { toneletter: 'G', semi: '', octave: 4, beat: 1 },
+        //     { toneletter: 'C', semi: '', octave: 5, beat: 1 }
+        // ]
+        // await playPolyNotes(notes)
 
-    // play multipy mp3 samples
-    // let urls=['whatever']
-    // playPolySample(urls)
+        // play an mp3 sample
+        // let url = 'data/instruments/piano/c4.mp3'
+        // playSample(url)
 
-    // let urls = ['whatever']
-    // myPlayPolySample1(urls)
+        // play multipy mp3 samples
+        // let urls=['whatever']
+        // playPolySample(urls)
 
-    // let urls = ['whatever']
-    // myPlayPolySample2(urls)
+        // let urls = ['whatever']
+        // myPlayPolySample1(urls)
 
-    let urls = ['whatever']
-    let baseUrl = 'data/instruments/piano/'
-    let samples = {
-        "C4": "C4.mp3",
-        "D#4": "Ds4.mp3",
-        "F#4": "Fs4.mp3",
-        "A4": "A4.mp3",
-    }
+        // let urls = ['whatever']
+        // myPlayPolySample2(urls)
 
-    // let baseUrl = 'externaltools/tone_instruments/samples/harmonium/'
-    // let samples = {
-    //     "A3": "A3.mp3",
-    //     "A#3": "As3.mp3",
-    //     "C4": "C4.mp3",
-    //     "E3": "E3.mp3",
-    //     "F#2": "Fs2.mp3",
-    // }
-    
-    
-    myPlayPolySample3(urls, samples, baseUrl, notesToPlay)
-})
+        let urls = ['whatever']
+        let baseUrl = 'data/instruments/piano/'
+        let samples = {
+            "C4": "C4.mp3",
+            "D#4": "Ds4.mp3",
+            "F#4": "Fs4.mp3",
+            "A4": "A4.mp3",
+        }
+
+        // let baseUrl = 'externaltools/tone_instruments/samples/harmonium/'
+        // let samples = {
+        //     "A3": "A3.mp3",
+        //     "A#3": "As3.mp3",
+        //     "C4": "C4.mp3",
+        //     "E3": "E3.mp3",
+        //     "F#2": "Fs2.mp3",
+        // }
+
+
+        myPlayPolySample3(urls, samples, baseUrl, notesToPlay)
+    })
 
 
 
@@ -320,8 +320,8 @@ async function playPressedKey(ev) {
             sampler.triggerAttack(key, now)
             d3.select(ev.target).on('mouseup', async function () {
                 // console.log('mouseup')
-                sampler.triggerRelease(key, now)                
-                d3.select(ev.target).attr('fill',  function (){ // async not work
+                sampler.triggerRelease(key, now)
+                d3.select(ev.target).attr('fill', function () { // async not work
                     // console.log(key.length)
                     if (key.length > 2) {
                         return 'black';
