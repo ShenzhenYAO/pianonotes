@@ -642,3 +642,34 @@ function makeTheSong(notedata, notedoms) {
     }
     return theSong
 } // makeTheSong
+
+
+// let foldedSongStaveNotes = foldSongNotesbyStavenoteUnit(theSong)
+//  folded song notes (each stavenote migh contain multiple notes to be played at the same time)
+function foldSongNotesbyStavenoteUnit(theSong) {
+    // console.log(theSong)
+    let result = [], notes = [], tmp = {}
+    theSong.forEach((d, i) => {
+        if (i === 0) {
+            tmp.clef = d.clef
+            tmp.measure = d.data.measure
+            tmp.stavenotenumber = d.data.stavenotenumber
+        }
+        if (tmp.clef === d.clef && tmp.measure === d.data.measure && tmp.stavenotenumber === d.data.stavenotenumber) {
+            notes.push(d)
+        } else {
+            tmp.notes = notes
+            result.push(tmp)
+            tmp = {}
+            notes = [d]
+            tmp.clef = d.clef
+            tmp.measure = d.data.measure
+            tmp.stavenotenumber = d.data.stavenotenumber
+        } // if else stavenotenumber or clef changed
+    }) //look for each 
+    // and push the last collection of notes
+    tmp.notes = notes
+    result.push(tmp)
+
+    return result
+} //foldSongNotesbyStavenoteUnit
