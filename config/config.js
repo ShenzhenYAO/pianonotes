@@ -35,7 +35,7 @@ const maxnotedivs = 10000;
 const momentdivdata = {
     maxwidth: 100,
     maxheight: 150,
-    stdstyles: { 'border': 'solid 1px', 'background-color': 'white'  }
+    stdstyles: { 'border': 'solid 0px', 'background-color': 'white'  }
 } // notedivdata
 
 const notekeydata = {
@@ -49,4 +49,11 @@ const stavedivdata = {
     height: 50,
     stdstyles: { 'border': 'solid 0px', 'background-color': 'white'  }
 }
+
+const width_measure = 500 // width per measure
+const scale_pianoicons = .6
+
+trebleStaveYOffset = 50
+staveDistanceBetweenClefs = 250
+pianoiconDistanceFromStaveNotes = 70
 

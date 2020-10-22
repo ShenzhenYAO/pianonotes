@@ -203,7 +203,7 @@ function makeVFMeasuresByClef(indata) {
 // loop for each clef, and measure, draw stavenotes
 // let vfstaves = addBlankStavesByClef(vfmeasures)
 function addBlankStavesByClef(vfmeasures, staveSVG_vft) {
-    let staveX = 0, staveY1 = 50, staveY2 = staveY1 + 300
+    let staveX = 0, staveY1 = trebleStaveYOffset, staveY2 = staveY1 + staveDistanceBetweenClefs
     let staveWidth, vfstaves = []
     vfmeasures.forEach((d, i) => {
         // console.log('==========', d.measure)
@@ -215,7 +215,7 @@ function addBlankStavesByClef(vfmeasures, staveSVG_vft) {
         if (i === 0) {
             let tmp = {}
             tmp.measure = d.measure
-            staveWidth = 300 //(maxLength -1) * notespace, staveBounds
+            staveWidth = maxLength * notespace// width_measure //(maxLength -1) * notespace, staveBounds
             staveBounds = { x: staveX, y: staveY1, w: staveWidth }
             let staveid = d.measure + '_' + d.treble[0].clef
             tmp.treble = addBlankStave(staveSVG_vft, staveBounds, d.treble[0].clef, timeSignature, staveid)
@@ -229,7 +229,7 @@ function addBlankStavesByClef(vfmeasures, staveSVG_vft) {
             let tmp = {}
             tmp.measure = d.measure
             staveX = staveX + staveWidth // based on x and w of last time
-            staveWidth = 300 // (maxLength -1) * notespace, staveBounds
+            staveWidth = maxLength * notespace //width_measure // (maxLength -1) * notespace, staveBounds
             staveBounds = { x: staveX, y: staveY1, w: staveWidth }
             let staveid = d.measure + '_' + d.treble[0].clef
             tmp.treble = addBlankStave(staveSVG_vft, staveBounds, null, timesig, staveid)
