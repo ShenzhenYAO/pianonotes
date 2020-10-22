@@ -67,7 +67,10 @@ function getNoteDataProperties(str, beat_previous) {
             // a tuplet contains 't' or 'T'
             else if (d.toLowerCase().indexOf('t') > -1) { tuplet = d.trim().toLowerCase() }
             // a finger start contains 'f' or 'F'
-            else if (d.toLowerCase().indexOf('f') > -1 && i > 0) { finger = d.trim().toLowerCase() }
+            else if (d.toLowerCase().indexOf('f') > -1 && i > 0) { 
+                let fingerstr=d.trim().toLowerCase().replace('f', '')
+                finger = fingerstr
+            }
             // a 'b' indicates beam needed
             else if (d.trim().toLowerCase() === 'b') {beam = 1 } 
             // or a beat, which is the second element without any letter

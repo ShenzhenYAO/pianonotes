@@ -165,16 +165,16 @@ var statusdiv = d3.select('div#statusdiv'), astr
     // part two add the piano icons
     /************************************************************** */
 
-    // create measureg elements, each for a stavenote unit
+    // create pianostavenoteg elements, each for a stavenote unit
     let parentDOM = d3.select('g#bigg').node()
-    let measureGs = makeMeasureGs(parentDOM, foldedSongStaveNotes)
-    // console.log(measureGs)
+    let PianoStavenoteGs = makePianoStavenoteGs(parentDOM, foldedSongStaveNotes)
+    // console.log(PianoStavenoteGs)
 
     // add the Piano icon components
-    let inner_momentg = await addPianoStaveUnits(measureGs, staveNoteGroups)
+    let inner_PianoStavenoteg = await addPianoStaveUnits(PianoStavenoteGs, staveNoteGroups)
 
     // add Piano keys
-    addpianokeys(inner_momentg)
+    addpianokeys(inner_PianoStavenoteg)
 
 
 })()

@@ -25,12 +25,18 @@ const pianokeydata = {
     stdrectattrs: { 'class': 'keyrect', 'stroke': 'black', 'stroke-width': 1 },
     stdtextattrs: {
         white: { 'fill': 'black', 'font-family': 'sans-serif', 'font-size': 10, 'font-weight': 'bold', 'text-align': 'center' },
-        black: { 'fill': 'white', 'font-family': 'sans-serif', 'font-size': 10, 'font-weight': 'bold', 'text-align': 'left', 'padding': '0' }
+        black: { 'fill': 'white', 'font-family': 'sans-serif', 'font-size': 10, 'font-weight': 'bold', 'text-align': 'center', 'padding': '0' }
     }
 
 } //pianokeydata
 
 const maxnotedivs = 10000;
+
+const PianoStavenotedivdata = {
+    maxwidth: 100,
+    maxheight: 180,
+    stdstyles: { 'border': 'solid 0px', 'background-color': 'white'  }
+} // notedivdata
 
 const momentdivdata = {
     maxwidth: 100,

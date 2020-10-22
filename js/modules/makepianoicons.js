@@ -1,30 +1,30 @@
 // make g elemnts, each corresponding to a stavenote unit (the notes to be played at the same time)
-function makeMeasureGs(parentDom, data) {
-    let measureGs = d3.select(parentDom).selectAll('g.measureg').data(data).enter()
+function makePianoStavenoteGs(parentDom, data) {
+    let PianoStavenoteGs = d3.select(parentDom).selectAll('g.PianoStavenoteG').data(data).enter()
         .append('g')
-        .attr('class', 'measureg') // this g is for transform-translate the position of the  moment icon (a set of piano keys indication which keys to press)
-    return measureGs
-} //makeMeasureGs
+        .attr('class', 'PianoStavenoteG') // this g is for transform-translate the position of the  PianoStavenote icon (a set of piano keys indication which keys to press)
+    return PianoStavenoteGs
+} //makePianoStavenoteGs
 
 // add the notes to be placed at the same time, by clef
-async function addPianoStaveUnits(measureGs, staveNoteGroups) {
-    measureGs.attr('transform', (d, i, em) => {
+async function addPianoStaveUnits(PianoStavenoteGs, staveNoteGroups) {
+    PianoStavenoteGs.attr('transform', (d, i, em) => {
         // console.log(d)
         // console.log(staveNoteGroups[d.clef][d.measure].measure.stave.bounds.x)
-        // let x = momentdivdata.maxwidth * i + 20 * i // width of each icon plus 20 px for padding
+        // let x = PianoStavenotedivdata.maxwidth * i + 20 * i // width of each icon plus 20 px for padding
         let measurestartX = staveNoteGroups[d.clef][d.measure].measure.stave.bounds.x
         // the above is to find the start x of the vf stave by the clef and measure data from the song data
 
 
         /***following is for offset of x within the measure */
-        // let stavenoteOffset = d.stavenotenumber * (momentdivdata.maxwidth + 30) * scale_pianoicons
+        // let stavenoteOffset = d.stavenotenumber * (PianoStavenotedivdata.maxwidth + 30) * scale_pianoicons
 
         // the offset is such that
         // need to get the stavenotes' first notehead dom's x position (d.notes[0].dom.x)
         // console.log(d.notes[0].dom.x)
         // need to get all such x positions of the staves within the same measure (both treble and bass)
         let StavenotesOftheSameMeasure = []
-        measureGs.data().forEach(e => {
+        PianoStavenoteGs.data().forEach(e => {
             if (e.measure === d.measure) { StavenotesOftheSameMeasure.push(e) }
         })
         // console.log(StavenotesOftheSameMeasure)
@@ -63,7 +63,7 @@ async function addPianoStaveUnits(measureGs, staveNoteGroups) {
         let orderOfcurrentstave = staveOrderDict[currentstaveid]
         // console.log(orderOfcurrentstave)
 
-        let stavenoteOffset = orderOfcurrentstave * (momentdivdata.maxwidth + 30) * scale_pianoicons
+        let stavenoteOffset = orderOfcurrentstave * (PianoStavenotedivdata.maxwidth + 30) * scale_pianoicons
         /** whew! the above is to set the correct position! */
 
 
@@ -74,37 +74,37 @@ async function addPianoStaveUnits(measureGs, staveNoteGroups) {
         let y = (d.clef === 'treble' ? trebleStaveYOffset + pianoiconDistanceFromStaveNotes : trebleStaveYOffset + staveDistanceBetweenClefs + pianoiconDistanceFromStaveNotes )
         let translateStr = 'translate(' + x + ',' + y + ')scale(' + scale_pianoicons + ')'
         return translateStr
-    })
+    }) // loop for each PianoStavenoteG
 
-    // the g.moments are moved horizontally according to the order of the displaynote moments
-    let momentFO = measureGs.append('foreignObject')
-        .attrs({ 'width': momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5 }) // attr w/h are for the stupid Safari
-        .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': momentdivdata.maxwidth * 1.5 + 'px' })
+    // the g.PianoStavenotes are moved horizontally according to the order of the displaynote PianoStavenotes
+    let PianoStavenoteFO = PianoStavenoteGs.append('foreignObject')
+        .attrs({ 'width': PianoStavenotedivdata.maxwidth, 'height': PianoStavenotedivdata.maxwidth * 1.8 }) // attr w/h are for the stupid Safari
+        .styles({ 'width': PianoStavenotedivdata.maxwidth + 'px', 'height': PianoStavenotedivdata.maxwidth * 1.8 + 'px' })
         .attr('transform', d => {
             let y = stavedivdata.height * 1.2
             return 'translate(0, ' + y + ')'
         }) // move down for 200 px
 
-    let momentdivs = momentFO
+    let PianoStavenotedivs = PianoStavenoteFO
         .append('xhtml:div')
-        .styles(momentdivdata.stdstyles)
-        .attrs({ 'class': 'momentdiv' })
-        .styles({ 'width': momentdivdata.maxwidth + 'px', 'height': (momentdivdata.maxwidth * 1.5) + 'px' })
+        .styles(PianoStavenotedivdata.stdstyles)
+        .attrs({ 'class': 'PianoStavenotediv' })
+        .styles({ 'width': PianoStavenotedivdata.maxwidth + 'px', 'height': (PianoStavenotedivdata.maxwidth * 1.8) + 'px' })
 
-    // add a set of moment svgs for the right hand icons
-    let momentsvg = momentdivs.append('svg').attrs({ 'class': 'momentsvg' }).styles({ "width": momentdivdata.maxwidth, 'height': momentdivdata.maxwidth * 1.5, 'background-color': 'white' })
-    let inner_momentg = momentsvg.append('g').attrs({ 'class': 'inner_momentg' })
+    // add a set of PianoStavenote svgs for the right hand icons
+    let PianoStavenotesvg = PianoStavenotedivs.append('svg').attrs({ 'class': 'PianoStavenotesvg' }).styles({ "width": PianoStavenotedivdata.maxwidth, 'height': PianoStavenotedivdata.maxwidth * 1.8, 'background-color': 'white' })
+    let inner_PianoStavenoteg = PianoStavenotesvg.append('g').attrs({ 'class': 'inner_PianoStavenoteg' })
 
-    return inner_momentg
+    return inner_PianoStavenoteg
 
 } //addPianoStaveUnits
 
 
 
-function addpianokeys(inner_momentg) {
+function addpianokeys(inner_PianoStavenoteg) {
 
     // add piano keys!
-    let keys = inner_momentg.attr('whatever', (d, i, em) => {
+    let keys = inner_PianoStavenoteg.attr('whatever', (d, i, em) => {
         // console.log(d)
         // determine the min and max letternumber
         // determine the min and max letter number, which is for determining the start and end piano key
@@ -128,7 +128,7 @@ function addpianokeys(inner_momentg) {
         // make the keys for the piano icon
         drawkeys(keyRange, d, i, em)
 
-    }) // inner_momentg
+    }) // inner_PianoStavenoteg
 
 } // addpianokeys
 
@@ -180,7 +180,7 @@ function drawkeys(keyRange, d, i, em) {
     let toneletter = d.notes[0].data.toneletter
     // console.log(toneletter)
 
-    // if the stavenotes contains R (rest moments), do not draw the piano icon
+    // if the stavenotes contains R (rest PianoStavenotes), do not draw the piano icon
     if (toneletter !== 'R') {
         // white keys
         // e.g., current from G1, then letter char code +1, if  current is G, make the next key as C, octaveN ++
@@ -293,6 +293,7 @@ function addnoteWhitekeys(theWhiteKeys, em) {
     // add finger label
     thenodegs_d3xn.selectAll('g.notewhitekeyg').append('text')
         .attrs(pianokeydata.stdtextattrs.white)
+        .styles({'font-size': 20, 'font-weight': 'bold', 'text-align':'left'})
         .attr('transform', (d, i, elm) => {
 
             // get height of the rect
@@ -313,12 +314,15 @@ function addnoteWhitekeys(theWhiteKeys, em) {
             let height_whitenotekey = width_whitenotekey * pianokeysize.white.length / pianokeysize.white.width
 
             // console.log(height_whitenotekey)
-            let x = width_whitenotekey / 8 + width_whitenotekey * i
-            let y = height_whitenotekey * 1.1
+            let x = width_whitenotekey / 3 + width_whitenotekey * i
+            let y = height_whitenotekey * 1.2
             let translateStr = 'translate(' + x + ', ' + y + ')'
             return translateStr
         })
-        .text(d => { return (d.press && d.presskeydata.finger) ? d.presskeydata.finger : '' })
+        .text(d => { 
+            console.log(d.presskeydata)
+            return (d.press && d.presskeydata.finger) ? d.presskeydata.finger : '' 
+        })
 
 } // addWhitekeys
 
@@ -381,7 +385,7 @@ function addABlackKey(notegdom, whitekeyindex, thiswhitekeygdom) {
         }
         return 'translate(' + x + '0)'
     })
-    // unlike white keys, there is no tone letters linked to black keys at this moment. The next is to indicate the Tone letter of the black key
+    // unlike white keys, there is no tone letters linked to black keys at this PianoStavenote. The next is to indicate the Tone letter of the black key
     theblackkey.attr('data', d => {
         // console.log(d3.select(thiswhitekeygdom))
         let x, thisblackkeyTone
