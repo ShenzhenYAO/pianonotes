@@ -1,41 +1,37 @@
 "use strict"
 
-const notesData = notesStr_test
+const notesData = notesStr_test;
 
 // init vex.flow
 const VF = Vex.Flow;
 const notespace = 120; // can adjust stave width, can enlarge, cannot shrink, weird!
 const beatperquarternote = 1;
-const timeSignature = '4/4'
+const timeSignature = '4/4';
 
-const quarternotesperminute = notesStr_test.signature.tempo
+var quarternotesperminute = notesStr_test.signature.tempo;
 // console.log(quarternotesperminute)
 
 
 // init notes 
 var allnotes, notes;
-const tempo = notesData.tempo
+const tempo = notesData.tempo;
 
 // for debug status
-var statusdiv = d3.select('div#statusdiv'), astr
+var statusdiv = d3.select('div#statusdiv'), astr;
 
 //https://tonejs.github.io/
 // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 
-const urls = ['whatever']
-            const baseUrl = 'data/instruments/piano/'
-            const samples = {
-                "C4": "C4.mp3",
-                "D#4": "Ds4.mp3",
-                "F#4": "Fs4.mp3",
-                "A4": "A4.mp3",
-            }
+// const urls = ['whatever']
+const  baseUrl = 'data/instruments/piano/';
+const samples = {
+    "C4": "C4.mp3",
+    "D#4": "Ds4.mp3",
+    "F#4": "Fs4.mp3",
+    "A4": "A4.mp3",
+};
+var sampler; // sample set as a global var, so as to be used for both attack and disconnect
 
-const sampler = new Tone.Sampler({
-    urls: samples,
-    release: 10, // what is it for
-    baseUrl: baseUrl,
-}).toDestination();
 
 (async () => {
 
@@ -199,55 +195,47 @@ const sampler = new Tone.Sampler({
 
     /*****the above is to add piano icons*********************** */
 
-
-
-    /************the following is to play sound by tonejs */
-    // has to separate by clefs
-    let theSong_treble = [], theSong_bass = []
-
-    theSong.forEach(d => {
-        if (d.clef === 'treble') {
-            theSong_treble.push(d)
-        }
-        if (d.clef === 'bass') {
-            theSong_bass.push(d)
-        }
-    }) // split
-
-    // prepare notes to be played by tone.js 
-    theSong_treble = prepareNotesforTonejs(theSong_treble)
-    theSong_bass = prepareNotesforTonejs(theSong_bass)
-
-    theSong = theSong_treble.concat(theSong_bass)
-    theSong = theSong.sort((a, b) => (a.momentid > b.momentid) ? 1 : -1)
-
-
     // console.log(theSong)
 
+    /**select the measures to play*/
+    let theMeasuresToPlay = []
+    let MeasureStart = 7
+    let MeasureEnd = 20
+    quarternotesperminute = 76
 
-    d3.select('div#bigdiv').append('button').text('play the song').styles({ 'margin-top': '30px' })
-        .on('click', async function () {
+    if (!MeasureStart) { MeasureStart = 0 }
+    if (!MeasureEnd) { MeasureEnd = theSong.length - 1 }
+    theSong.forEach(d => {
+        if (d.measure >= MeasureStart && d.measure <= MeasureEnd) { theMeasuresToPlay.push(d) }
+    })
 
-            //https://tonejs.github.io/
-            // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+    /************the following is to play sound by tonejs */
+    theMeasuresToPlay = prepareNotesforTonejs(theMeasuresToPlay)
 
-
-            let notesToPlay = []
-            theSong.forEach(d => {
-                // console.log(d)
-                if (!d.tonejsdata.tone.includes('R')) {
-                    notesToPlay.push(d.tonejsdata)
-                }
-            })
-            // console.log(notesToPlay)
-
-            await myPlayPolySample3(notesToPlay)
-        })
-
-
+    // console.log(theSong)
+    AddClickToPlaySongButton(theMeasuresToPlay)
 
     /*****the above is to play song by tone.js  *********************** */
 
+    d3.select('div#bigdiv').append('button').text('stop').styles({ 'margin-top': '30px' })
+        .on('click', async function (theMeasuresToPlay) {
+            // let notesToPlay =theMeasuresToPlay
+            // const now = Tone.now()
+            // sampler.releaseAll(now)
+            sampler.dispose()
+
+            // Tone.loaded().then((notesToPlay) => {
+            //     Tone.context.resume().then(() => {
+            //         const now = Tone.now()
+            //         notesToPlay.forEach(h => {
+            //             // console.log(h)
+            //             sampler.triggerRelease([h.tone],now );
+            //         })
+            //         // it'll automatically pitch shift the samples to fill in gaps between notes! In this example there is no sample for C2, but Tone.Sampler will calculate it (do not even need the mp3)
+            //     }) // Tone.context.resume()
+            // }) // Tone.loaded()
+
+        })
 
 })()
 
