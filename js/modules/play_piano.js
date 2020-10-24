@@ -58,7 +58,6 @@
 
         } // for each note starting from i=1
 
-
         return theSong
     } //prepareNotesforTonejs
 
