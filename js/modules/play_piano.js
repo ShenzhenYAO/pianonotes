@@ -1,9 +1,7 @@
 
-    
-
-
-    
-    
+     
+    // prepare notes for tonejs. The key is to set start time for each note
+    // it has to be done by clef
     function prepareNotesforTonejs(theSong) {
 
         // notes in theSong is like (clef, measure, stavenotenumber, momentorder, and notes:{clef, data, dom, etc})
@@ -66,12 +64,8 @@
 
 
 // Tone.Sampler to play poly sound file (e.g., c4.mp3)
-async function myPlayPolySample3(urls, samples, baseUrl, notesToPlay) {
-    const sampler = new Tone.Sampler({
-        urls: samples,
-        release: 10, // what is it for
-        baseUrl: baseUrl,
-    }).toDestination();
+async function myPlayPolySample3( notesToPlay) {
+    
     Tone.loaded().then(() => {
         Tone.context.resume().then(() => {
             const now = Tone.now()

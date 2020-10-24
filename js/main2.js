@@ -22,6 +22,21 @@ var statusdiv = d3.select('div#statusdiv'), astr
 //https://tonejs.github.io/
 // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 
+const urls = ['whatever']
+            const baseUrl = 'data/instruments/piano/'
+            const samples = {
+                "C4": "C4.mp3",
+                "D#4": "Ds4.mp3",
+                "F#4": "Fs4.mp3",
+                "A4": "A4.mp3",
+            }
+
+const sampler = new Tone.Sampler({
+    urls: samples,
+    release: 10, // what is it for
+    baseUrl: baseUrl,
+}).toDestination();
+
 (async () => {
 
     // make a big div for stavenotes, and piano icons
@@ -226,15 +241,7 @@ var statusdiv = d3.select('div#statusdiv'), astr
             })
             // console.log(notesToPlay)
 
-            let urls = ['whatever']
-            let baseUrl = 'data/instruments/piano/'
-            let samples = {
-                "C4": "C4.mp3",
-                "D#4": "Ds4.mp3",
-                "F#4": "Fs4.mp3",
-                "A4": "A4.mp3",
-            }
-            await myPlayPolySample3(urls, samples, baseUrl, notesToPlay)
+            await myPlayPolySample3(notesToPlay)
         })
 
 
