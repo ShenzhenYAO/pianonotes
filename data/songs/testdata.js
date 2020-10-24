@@ -1,5 +1,5 @@
 const notesStr_test = {
-    signature: { tempo: 176 }, //76
+    signature: { tempo: 76 }, //76
     notes: [
         {
             clef: 'treble',

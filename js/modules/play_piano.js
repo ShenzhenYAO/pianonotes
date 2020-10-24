@@ -111,22 +111,80 @@ async function myPlayPolySample3(baseUrl, samples, notesToPlay) {
 } //
 
 
-function AddClickToPlaySongButton(theSong) {
-    d3.select('div#bigdiv').append('button').text('play the song').styles({ 'margin-top': '30px' })
+async function ClickToPlaySong(theSong, staveNoteGroups, repeatTimes) {
+
+
+    // console.log(staveNoteGroups)
+    d3.select('button#playbutton') // .append('button').text('play the song').styles({ 'margin-top': '30px' })
         .on('click', async function () {
+
+
+            // get the value and speed
+            var theMeasuresToPlay = []
+            let MeasureStart = parseInt(d3.select('input#start').node().value) // heck! d3 still cannot get value of input selector
+            let MeasureEnd = parseInt(d3.select('input#stop').node().value)
+            quarternotesperminute = parseInt(d3.select('input#speed').node().value)
+
+            console.log(MeasureStart, MeasureEnd, quarternotesperminute)
+
+            if (!MeasureStart) { MeasureStart = 0 }
+            if (!MeasureEnd) { MeasureEnd = theSong.length - 1 }
+            theSong.forEach(d => {
+                if (d.measure >= MeasureStart && d.measure <= MeasureEnd) { theMeasuresToPlay.push(d) }
+            })
+
+            /************the following is to play sound by tonejs */
+            theMeasuresToPlay = prepareNotesforTonejs(theMeasuresToPlay)
+
 
             //https://tonejs.github.io/
             // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 
             let notesToPlay = []
-            theSong.forEach(d => {
+            theMeasuresToPlay.forEach(d => {
                 // console.log(d)
                 if (!d.tonejsdata.tone.includes('R')) {
                     notesToPlay.push(d.tonejsdata)
                 }
             })
             // console.log(notesToPlay)
-            
-            await myPlayPolySample3(baseUrl, samples, notesToPlay)
-        })
+            if (!repeatTimes) { repeatTimes = 1 }
+
+            for (let i = 0; i < repeatTimes; i++) {
+                myPlayPolySample3(baseUrl, samples, notesToPlay)
+                slideStavenotes(theMeasuresToPlay, staveNoteGroups)
+            } // for
+
+        }) // on clikc
 }// AddClickToPlaySongButton
+
+
+// move the stavenotes when playing the song
+function slideStavenotes(theMeasuresToPlay, staveNoteGroups) {
+    // calculate the accumulative durations in secs
+    let lengthOfPlay = theMeasuresToPlay[theMeasuresToPlay.length - 1].tonejsdata.startTime
+        + theMeasuresToPlay[theMeasuresToPlay.length - 1].tonejsdata.durationSeconds
+    // console.log(lengthOfPlay)
+
+    // the start x and end x position of the measures
+    // console.log($('div#bigdiv').width())
+    let firstMeasure = theMeasuresToPlay[0]
+    let startMeasureX = staveNoteGroups[firstMeasure.clef][firstMeasure.measure].measure.stave.bounds.x
+    // console.log(startMeasureX)
+
+    let lastMeasure = theMeasuresToPlay[theMeasuresToPlay.length - 1]
+    let lastMeasureX = staveNoteGroups[lastMeasure.clef][lastMeasure.measure].measure.stave.bounds.x
+        + staveNoteGroups[lastMeasure.clef][lastMeasure.measure].measure.stave.bounds.w
+    let offsetDivWidth = $('div#bigdiv').width()
+    // console.log(lastMeasureX)
+
+    let biggStartX = startMeasureX
+    let biggStopX = lastMeasureX - offsetDivWidth > biggStartX ? lastMeasureX - offsetDivWidth : biggStartX
+    console.log(biggStartX,biggStopX )
+
+    d3.select('g#bigg').attr('transform', 'translate(' + -biggStartX + ', 0)')
+
+    d3.select('g#bigg').transition().duration(lengthOfPlay * 1000).ease(d3.easeLinear)
+        .attr('transform', 'translate(' + -biggStopX + ', 0)')
+
+} //  slideStavenotes()

@@ -23,7 +23,7 @@ var statusdiv = d3.select('div#statusdiv'), astr;
 // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
 
 // const urls = ['whatever']
-const  baseUrl = 'data/instruments/piano/';
+const baseUrl = 'data/instruments/piano/';
 const samples = {
     "C4": "C4.mp3",
     "D#4": "Ds4.mp3",
@@ -33,7 +33,7 @@ const samples = {
 var sampler; // sample set as a global var, so as to be used for both attack and disconnect
 
 
-(async () => {
+(async () => {    
 
     // make a big div for stavenotes, and piano icons
     // including a div, an svg, and a g, zoom/pan enabled
@@ -41,14 +41,6 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     // astr='makeBigDivs() run successfully'
     // d3.select('div#statusdiv').html(astr)
 
-    //make the 88 key paino
-    await buildPianoWrappers()
-    // astr= astr + '<br/>'+'buildPianoWrappers() run successfully'
-    // d3.select('div#statusdiv').html(astr)
-    // // build the initinal piano
-    await buildPianoKeys()
-    // astr= astr + '<br/>'+'buildPianoKeys() run successfully'
-    // d3.select('div#statusdiv').html(astr)
 
     // get the standardized notes
     // 1. get a collection of notesdata by clef
@@ -131,7 +123,6 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     allStaveNoteData.bass = makeStaveNoteArrayByClef(staveNoteGroups, 'bass')
     // console.log(allStaveNoteData)
 
-
     // link data to node heads
 
     //The stavenote are unit of notes to be played at the same time
@@ -198,44 +189,59 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     // console.log(theSong)
 
     /**select the measures to play*/
-    let theMeasuresToPlay = []
-    let MeasureStart = 7
-    let MeasureEnd = 20
-    quarternotesperminute = 76
+    // let theMeasuresToPlay = []
+    // let MeasureStart = 0
+    // let MeasureEnd = 6
+    // quarternotesperminute = 76/3
 
-    if (!MeasureStart) { MeasureStart = 0 }
-    if (!MeasureEnd) { MeasureEnd = theSong.length - 1 }
-    theSong.forEach(d => {
-        if (d.measure >= MeasureStart && d.measure <= MeasureEnd) { theMeasuresToPlay.push(d) }
-    })
+    // if (!MeasureStart) { MeasureStart = 0 }
+    // if (!MeasureEnd) { MeasureEnd = theSong.length - 1 }
+    // theSong.forEach(d => {
+    //     if (d.measure >= MeasureStart && d.measure <= MeasureEnd) { theMeasuresToPlay.push(d) }
+    // })
 
-    /************the following is to play sound by tonejs */
-    theMeasuresToPlay = prepareNotesforTonejs(theMeasuresToPlay)
+
+
+    let theLengthMeasures = theSong[theSong.length -1].measure
+    // console.log(theLengthMeasures)
+    // add input box
+    d3.select('div#bigdiv').append('input').attrs({'id':'start', 'value':0})
+    d3.select('div#bigdiv').append('input').attrs({'id':'stop', 'value':theLengthMeasures})
+    d3.select('div#bigdiv').append('input').attrs({'id':'speed', 'value':quarternotesperminute})
+    d3.select('div#bigdiv').append('button').attrs({'id':'playbutton'}).text('play the song').styles({ 'margin-top': '30px' })
+    d3.select('div#bigdiv').append('button').attrs({'id':'stopbutton'}).text('stop').styles({ 'margin-top': '30px' })
+
+    //make the 88 key paino
+    await buildPianoWrappers()
+    // astr= astr + '<br/>'+'buildPianoWrappers() run successfully'
+    // d3.select('div#statusdiv').html(astr)
+    // // build the initinal piano
+    await buildPianoKeys()
+    // astr= astr + '<br/>'+'buildPianoKeys() run successfully'
+    // d3.select('div#statusdiv').html(astr)
+
+
+    
+    // /************the following is to play sound by tonejs */
+    // theMeasuresToPlay = prepareNotesforTonejs(theMeasuresToPlay)
 
     // console.log(theSong)
-    AddClickToPlaySongButton(theMeasuresToPlay)
+
+    await ClickToPlaySong(theSong, staveNoteGroups)      
 
     /*****the above is to play song by tone.js  *********************** */
-
-    d3.select('div#bigdiv').append('button').text('stop').styles({ 'margin-top': '30px' })
+    d3.select('button#stopbutton')//.append('button').text('stop').styles({ 'margin-top': '30px' })
         .on('click', async function (theMeasuresToPlay) {
-            // let notesToPlay =theMeasuresToPlay
-            // const now = Tone.now()
-            // sampler.releaseAll(now)
-            sampler.dispose()
+            sampler.dispose()  //.disconnect() // https://tonejs.github.io/docs/r11/Sampler
+            // return to the first stave
+            d3.select('g#bigg').transition().attr('transform', 'translate(0, 0)')
+        }) // on click
 
-            // Tone.loaded().then((notesToPlay) => {
-            //     Tone.context.resume().then(() => {
-            //         const now = Tone.now()
-            //         notesToPlay.forEach(h => {
-            //             // console.log(h)
-            //             sampler.triggerRelease([h.tone],now );
-            //         })
-            //         // it'll automatically pitch shift the samples to fill in gaps between notes! In this example there is no sample for C2, but Tone.Sampler will calculate it (do not even need the mp3)
-            //     }) // Tone.context.resume()
-            // }) // Tone.loaded()
+    // console.log(theMeasuresToPlay)
 
-        })
+    
+
+
 
 })()
 
