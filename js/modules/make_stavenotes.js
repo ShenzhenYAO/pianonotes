@@ -592,11 +592,11 @@ function getStaveNoteheadGDoms(vfstavenotesg) {
 function addNoteheadDomXY(notedoms) {
     notedoms.forEach(d => {
         // the first child of the noteheadg is a path
-        let thePathStr = d3.select(d.dom).select('path').attr('d')
+        let thePathStr = d3.select(d.noteheaddom).select('path').attr('d')
         let thexystr = thePathStr.split('M')[1]
         // console.log(thexystr.split(' '))
-        d.dom.x = parseFloat(thexystr.split(' ')[0])
-        d.dom.y = parseFloat(thexystr.split(' ')[1])
+        d.noteheaddom.x = parseFloat(thexystr.split(' ')[0])
+        d.noteheaddom.y = parseFloat(thexystr.split(' ')[1])
     })
     return notedoms
 } // addNoteheadDomXY
@@ -624,7 +624,7 @@ let notedoms = []
 function mergeNoteheadDoms(noteheads_dom, clef, result) {
     noteheads_dom[clef].forEach(d => {
         let tmp = { clef: clef }
-        tmp.dom = d
+        tmp.noteheaddom = d
         result.push(tmp)
     })
     return result
@@ -637,7 +637,7 @@ function makeTheSong(notedata, notedoms) {
     let theSong = []
     for (let i = 0; i < notedata.length; i++) {
         let tmp = notedata[i]
-        tmp.dom = notedoms[i].dom
+        tmp.noteheaddom = notedoms[i].noteheaddom
         theSong.push(tmp)
     }
     return theSong

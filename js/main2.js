@@ -8,6 +8,9 @@ const notespace = 120; // can adjust stave width, can enlarge, cannot shrink, we
 const beatperquarternote = 1;
 const timeSignature = '4/4'
 
+const quarternotesperminute = notesStr_test.signature.tempo
+// console.log(quarternotesperminute)
+
 
 // init notes 
 var allnotes, notes;
@@ -175,6 +178,68 @@ var statusdiv = d3.select('div#statusdiv'), astr
 
     // add Piano keys
     addpianokeys(inner_PianoStavenoteg)
+
+    // add the pianoicon into the data of theSong, making it like {clef, data, noteheaddom, pianostavenotegdom}
+    theSong = mergePianoStavenoteGsIntoTheSong(theSong, inner_PianoStavenoteg)
+
+    /*****the above is to add piano icons*********************** */
+
+
+
+    /************the following is to play sound by tonejs */
+    // has to separate by clefs
+    let theSong_treble = [], theSong_bass = []
+
+    theSong.forEach(d => {
+        if (d.clef === 'treble') {
+            theSong_treble.push(d)
+        }
+        if (d.clef === 'bass') {
+            theSong_bass.push(d)
+        }
+    }) // split
+
+    // prepare notes to be played by tone.js 
+    theSong_treble = prepareNotesforTonejs(theSong_treble)
+    theSong_bass = prepareNotesforTonejs(theSong_bass)
+
+    theSong = theSong_treble.concat(theSong_bass)
+    theSong = theSong.sort((a, b) => (a.momentid > b.momentid) ? 1 : -1)
+
+
+    // console.log(theSong)
+
+
+    d3.select('div#bigdiv').append('button').text('play the song').styles({ 'margin-top': '30px' })
+        .on('click', async function () {
+
+            //https://tonejs.github.io/
+            // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+
+
+            let notesToPlay = []
+            theSong.forEach(d => {
+                // console.log(d)
+                if (!d.tonejsdata.tone.includes('R')) {
+                    notesToPlay.push(d.tonejsdata)
+                }
+            })
+            // console.log(notesToPlay)
+
+            let urls = ['whatever']
+            let baseUrl = 'data/instruments/piano/'
+            let samples = {
+                "C4": "C4.mp3",
+                "D#4": "Ds4.mp3",
+                "F#4": "Fs4.mp3",
+                "A4": "A4.mp3",
+            }
+            await myPlayPolySample3(urls, samples, baseUrl, notesToPlay)
+        })
+
+
+
+    /*****the above is to play song by tone.js  *********************** */
 
 
 })()

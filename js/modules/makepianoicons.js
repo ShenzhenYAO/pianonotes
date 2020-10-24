@@ -20,8 +20,8 @@ async function addPianoStaveUnits(PianoStavenoteGs, staveNoteGroups) {
         // let stavenoteOffset = d.stavenotenumber * (PianoStavenotedivdata.maxwidth + 30) * scale_pianoicons
 
         // the offset is such that
-        // need to get the stavenotes' first notehead dom's x position (d.notes[0].dom.x)
-        // console.log(d.notes[0].dom.x)
+        // need to get the stavenotes' first notehead dom's x position (d.notes[0].noteheaddom.x)
+        // console.log(d.notes[0].noteheaddom.x)
         // need to get all such x positions of the staves within the same measure (both treble and bass)
         let StavenotesOftheSameMeasure = []
         PianoStavenoteGs.data().forEach(e => {
@@ -32,12 +32,12 @@ async function addPianoStaveUnits(PianoStavenoteGs, staveNoteGroups) {
         // for example, In the first measure, there is one stave for the treble clef, and three for the bass clef
         // each of these measures can be identified by its clef, measure number, and stavenotenumber
         //  (.clef, .measure, and .stavenotenumber)
-        // on the other hand, these staves have their own x positions: .notes[0].dom.x
+        // on the other hand, these staves have their own x positions: .notes[0].noteheaddom.x
         // the idea is to make a map, sort by x positons of each stave
         let staveOrderNumbers = []
         StavenotesOftheSameMeasure.forEach(f => {
             let id = f.clef + '_' + f.measure + '_' + f.stavenotenumber
-            let x = parseInt(f.notes[0].dom.x)
+            let x = parseInt(f.notes[0].noteheaddom.x)
             staveOrderNumbers.push({ id: id, x: x })
         })
 
@@ -61,7 +61,9 @@ async function addPianoStaveUnits(PianoStavenoteGs, staveNoteGroups) {
         // now look up the staveOrderDict, and find the order number of the current stave (d)
         let currentstaveid = d.clef + '_' + d.measure + '_' + d.stavenotenumber
         let orderOfcurrentstave = staveOrderDict[currentstaveid]
+        d.momentorder = orderOfcurrentstave
         // console.log(orderOfcurrentstave)
+        // console.log(d)
 
         let stavenoteOffset = orderOfcurrentstave * (PianoStavenotedivdata.maxwidth + 30) * scale_pianoicons
         /** whew! the above is to set the correct position! */
@@ -320,7 +322,7 @@ function addnoteWhitekeys(theWhiteKeys, em) {
             return translateStr
         })
         .text(d => { 
-            console.log(d.presskeydata)
+            // console.log(d.presskeydata)
             return (d.press && d.presskeydata.finger) ? d.presskeydata.finger : '' 
         })
 
@@ -518,4 +520,39 @@ function setWhiteKeys(keyRange, d) {
 } // makeWhiteKeys
 
 
+// add the pianoicon into the data of theSong, making it like {clef, data, noteheaddom, pianostavenotegdom}
+// theSong = mergePianoStavenoteGsIntoTheSong(theSong, inner_PianoStavenoteg)
+// // console.log(theSong)
 
+function mergePianoStavenoteGsIntoTheSong(theSong, inner_PianoStavenoteg) {
+    // console.log(inner_PianoStavenoteg)
+    // loop for each element in theSong
+    theSong.forEach(d=>{
+        // get str for clef, measure, stavenotenumber
+        let theSongNoteidStr = d.clef + '_' + d.data.measure + '_' + d.data.stavenotenumber
+        d.measure = d.data.measure
+        d.stavenotenumber = d.data.stavenotenumber
+        
+        // console.log(idStr)
+        // loop for each g dom of inner_PianoStavenoteg
+        let inner_PianoStavenoteg_doms=inner_PianoStavenoteg.nodes()
+        for (let k=0;k<inner_PianoStavenoteg_doms.length;k++ ){
+            let e =d3.select(inner_PianoStavenoteg_doms[k]).datum()
+            let pianostavenotegIdStr = e.clef + '_' + e.measure + '_' + e.stavenotenumber
+            // console.log(theSongNoteidStr, pianostavenotegIdStr)
+            if (theSongNoteidStr === pianostavenotegIdStr ){
+                d.pianostavenotegdom = inner_PianoStavenoteg_doms[k]
+                d.momentorder = e.momentorder
+                break
+            } // if id matches                
+        } // for k loop
+        d.momentid = d.measure * 1000000 + d.momentorder
+
+    }) // theSong forEach
+
+    let sortedNotesInSong = theSong.sort(function (a, b) {
+        return a["measure"] - b["measure"] || a["momentorder"] - b["momentorder"];
+    });
+
+    return sortedNotesInSong
+} // mergePianoStavenoteGsIntoTheSong()
