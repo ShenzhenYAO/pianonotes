@@ -96,36 +96,33 @@ async function myPlayPolySample3(baseUrl, samples, notesToPlay) {
 
     Tone.loaded().then(() => {
         Tone.context.resume().then(() => {
-            const now = Tone.now()
+            const time0 = Tone.now() 
             notesToPlay.forEach(h => {
                 // console.log(h)
-                sampler.triggerAttackRelease([h.tone], h.durationSeconds, now + h.startTime);
+                sampler.triggerAttackRelease([h.tone], h.durationSeconds, time0 + h.startTime);
             })
             // it'll automatically pitch shift the samples to fill in gaps between notes! In this example there is no sample for C2, but Tone.Sampler will calculate it (do not even need the mp3)
         }) // Tone.context.resume()
     }) // Tone.loaded()
 
-
-
-
 } //
 
 
-async function ClickToPlaySong(theSong, staveNoteGroups, repeatTimes) {
+async function ClickToPlaySong(theSong, staveNoteGroups) {
 
 
     // console.log(staveNoteGroups)
     d3.select('button#playbutton') // .append('button').text('play the song').styles({ 'margin-top': '30px' })
         .on('click', async function () {
 
-
             // get the value and speed
             var theMeasuresToPlay = []
             let MeasureStart = parseInt(d3.select('input#start').node().value) // heck! d3 still cannot get value of input selector
             let MeasureEnd = parseInt(d3.select('input#stop').node().value)
             quarternotesperminute = parseInt(d3.select('input#speed').node().value)
+            let repeatTimes = parseInt(d3.select('input#repeat').node().value)
 
-            console.log(MeasureStart, MeasureEnd, quarternotesperminute)
+            // console.log(MeasureStart, MeasureEnd, quarternotesperminute)
 
             if (!MeasureStart) { MeasureStart = 0 }
             if (!MeasureEnd) { MeasureEnd = theSong.length - 1 }
@@ -147,12 +144,19 @@ async function ClickToPlaySong(theSong, staveNoteGroups, repeatTimes) {
                     notesToPlay.push(d.tonejsdata)
                 }
             })
+
+        // calculate the accumulative durations in secs
+        let lengthOfPlay = theMeasuresToPlay[theMeasuresToPlay.length - 1].tonejsdata.startTime
+        + theMeasuresToPlay[theMeasuresToPlay.length - 1].tonejsdata.durationSeconds
+        // console.log(lengthOfPlay)
+
             // console.log(notesToPlay)
             if (!repeatTimes) { repeatTimes = 1 }
-
             for (let i = 0; i < repeatTimes; i++) {
-                myPlayPolySample3(baseUrl, samples, notesToPlay)
-                slideStavenotes(theMeasuresToPlay, staveNoteGroups)
+                setTimeout(async function () {
+                    await myPlayPolySample3(baseUrl, samples, notesToPlay)
+                    await slideStavenotes(theMeasuresToPlay, staveNoteGroups)
+                }, (lengthOfPlay+3)*1000*i+3000)
             } // for
 
         }) // on clikc
@@ -160,7 +164,7 @@ async function ClickToPlaySong(theSong, staveNoteGroups, repeatTimes) {
 
 
 // move the stavenotes when playing the song
-function slideStavenotes(theMeasuresToPlay, staveNoteGroups) {
+async function slideStavenotes(theMeasuresToPlay, staveNoteGroups) {
     // calculate the accumulative durations in secs
     let lengthOfPlay = theMeasuresToPlay[theMeasuresToPlay.length - 1].tonejsdata.startTime
         + theMeasuresToPlay[theMeasuresToPlay.length - 1].tonejsdata.durationSeconds
@@ -176,13 +180,13 @@ function slideStavenotes(theMeasuresToPlay, staveNoteGroups) {
     let lastMeasureX = staveNoteGroups[lastMeasure.clef][lastMeasure.measure].measure.stave.bounds.x
         + staveNoteGroups[lastMeasure.clef][lastMeasure.measure].measure.stave.bounds.w
     let offsetDivWidth = $('div#bigdiv').width()
-    // console.log(lastMeasureX)
+    // console.log(startMeasureX, offsetDivWidth/2)
 
-    let biggStartX = startMeasureX
+    let biggStartX = startMeasureX - offsetDivWidth / 3
     let biggStopX = lastMeasureX - offsetDivWidth > biggStartX ? lastMeasureX - offsetDivWidth : biggStartX
-    console.log(biggStartX,biggStopX )
+    // console.log(biggStartX, biggStopX)
 
-    d3.select('g#bigg').attr('transform', 'translate(' + -biggStartX + ', 0)')
+    d3.select('g#bigg').transition().duration(0).attr('transform', 'translate(' + -biggStartX + ', 0)')
 
     d3.select('g#bigg').transition().duration(lengthOfPlay * 1000).ease(d3.easeLinear)
         .attr('transform', 'translate(' + -biggStopX + ', 0)')

@@ -208,6 +208,7 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     d3.select('div#bigdiv').append('input').attrs({'id':'start', 'value':0})
     d3.select('div#bigdiv').append('input').attrs({'id':'stop', 'value':theLengthMeasures})
     d3.select('div#bigdiv').append('input').attrs({'id':'speed', 'value':quarternotesperminute})
+    d3.select('div#bigdiv').append('input').attrs({'id':'repeat', 'value':1})
     d3.select('div#bigdiv').append('button').attrs({'id':'playbutton'}).text('play the song').styles({ 'margin-top': '30px' })
     d3.select('div#bigdiv').append('button').attrs({'id':'stopbutton'}).text('stop').styles({ 'margin-top': '30px' })
 
