@@ -29,12 +29,13 @@ function makeVFNoteData(indata) {
         // wholeduration of the tuplets
         let beats_wholetuplet = parseFloat(indata.data.tuplet.replace('t', '')) // in beats
         duration = 1 / (beats_wholetuplet / 2) * (beatperquarternote * 4)
+        // console.log(duration)
     } // if
     if (indata.data.accidentals.length > 0) {
         accidentals = indata.data.accidentals.replace(/s/g, '#')
         accidentals = accidentals.replace(/f/g, 'b')
     }
-
+    
     indata.data.vfdata = {}
     indata.data.vfdata.dot = dot
     indata.data.vfdata.clef = clef
@@ -55,6 +56,7 @@ function makeVFNoteData(indata) {
     indata.data.vfdata.letternum = indata.data.letternum
     indata.data.vfdata.dataline = indata.dataline
     indata.data.vfdata.measure = indata.bar
+    // console.log(indata)
     return indata
 } // makevfnotedata
 
@@ -325,7 +327,6 @@ function makeStaveNoteGroups(stavenotes) {
 
 // add notes, taking care of accidentals, dots, beams, tuplets, ties within measure. ties across measures are not correct
 function makeAllStaveNotegroupsInAMeasure(thestave, notegroups, beatPerQuaterNote, setStrictOff) {
-
     // console.log(notegroups)
 
     let n_voices = 0, sumbeats = 0, beams = [], tuplets = [], allStaveNotes, tiestarts = [],
@@ -353,9 +354,7 @@ function makeAllStaveNotegroupsInAMeasure(thestave, notegroups, beatPerQuaterNot
             let adj_beats2 = 0
             // if tuplet=1, reduce 1/3 from the beat by d.duration, this vex flow is not great and need adjustment
             if (d._mydata.tuplet) { adj_beats2 = -(4 * beatPerQuaterNote) / parseInt(d.duration) * 1 / 3 }
-
             voiceIndex++;
-            // console.log(d.duration)
             sumbeats = sumbeats + (4 * beatPerQuaterNote) / parseInt(d.duration) + adj_beats1 + adj_beats2
         })
 
@@ -387,17 +386,21 @@ function makeAllStaveNotegroupsInAMeasure(thestave, notegroups, beatPerQuaterNot
         n_voices = n_voices + thenotegroup.notes.length
     }) //notegroups.forEach
 
+    sumbeats = Math.round(sumbeats) // must have! otherwise the num_beats will not be rounded if there is tuplets. If, for the same measure (bar,) the treble part is with tuplet, but the bass is not, and the tuplet starts after a nontuplet,like B4, then tuplet(B4, A4, B4), it will reprot error!
+    // and the stupid message appears: code: "TickMismatch", message: "Voices should have same total note duration in ticks."
+    
     //2. define the number of beats, and beat value in a measure
     let measure_vfe = new VF.Voice({ num_beats: sumbeats, beat_value: (4 * beatPerQuaterNote) }); // 1 beat in a measure (bar), a quarter note (4) as a beat
     // console.log(measure_vfe) // this is confusing. measure is also named 'e' of vf object
 
     // console.log(allStaveNotes)
+    // console.log('setStrictOff === ', setStrictOff)
+
+    //4. determien whether to turn off the setStrict(). When turned off, VF does not report error and stop even if there is no enough beats in a measure (bar). However, if there are too many beats than a bar should have, VF will report error and halter
+    if (setStrictOff) {         measure_vfe.setStrict(false)     } // this should proceed
 
     //3. voice.addTickables(voices.concat(voices2)).setStrict(false);
     measure_vfe.addTickables(allStaveNotes)
-
-    //4. determien whether to turn off the setStrict(). When turned off, VF does not report error and stop even if there is no enough beats in a measure (bar). However, if there are too many beats than a bar should have, VF will report error and halter
-    if (setStrictOff) { measure_vfe.setStrict(false) }
 
     // add my node data to it
     allStaveNotes.forEach((d, i) => {
@@ -411,6 +414,7 @@ function makeAllStaveNotegroupsInAMeasure(thestave, notegroups, beatPerQuaterNot
 
 // draw stave notes by measure and by clef
 function drawStaveNotes(staveSVG_vft, vfmeasures, vfstaves) {
+    
     let result = {}
     result.treble = []
     result.bass = []
@@ -450,6 +454,10 @@ function drawStaveNotes(staveSVG_vft, vfmeasures, vfstaves) {
             bassGroup = makeAllStaveNotegroupsInAMeasure(staveBass, stavenotegroups, beatperquarternote, setStrictOff)
         }
 
+        // console.log(trebleGroup, bassGroup)
+
+        
+
         // https://github.com/0xfe/vexflow/wiki/The-VexFlow-FAQ#how-do-i-align-multiple-voices-across-staves
 
         let voiceTreble = trebleGroup.measure
@@ -461,7 +469,7 @@ function drawStaveNotes(staveSVG_vft, vfmeasures, vfstaves) {
         // addTickables
         voiceTreble.addTickables(notesTreble).setStave(staveTreble);
         voiceBass.addTickables(notesBass).setStave(staveBass);
-
+   
         // Make sure the staves have the same starting point for notes
         // var startX = Math.max(staveTreble.getNoteStartX(), staveBass.getNoteStartX()) ;
         let startX = voiceTreble.stave.bounds.x

@@ -69,7 +69,7 @@ const notesStr_test = {
 
             3.5n, 1.5, f4v
             3b, .5, f3
-            2.5, .5, b, f2
+            2.5, .5, b, f2v
             2, b, f1
 
         `

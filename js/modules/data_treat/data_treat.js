@@ -57,6 +57,7 @@ function getNoteDataProperties(str, beat_previous) {
             accidentals = d.toLowerCase().trim().replace(/[0-9]/g, '')
             accidentals = accidentals.replace('.', '')
             accidentals = accidentals.replace('m', '')
+            accidentals = accidentals.replace('-', '') // for negative line numbers (the second line and down, below the 5 staff lines)
         } else {
             // a tie start contains 'ts' or 'TS'
             if (d.toLowerCase().indexOf('ts') > -1) { tiestart = d.trim().toLowerCase() }

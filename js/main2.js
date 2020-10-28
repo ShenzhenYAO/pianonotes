@@ -1,6 +1,6 @@
 "use strict"
 
-const notesData = notesStr_test;
+const notesData = janeeyre; //notesStr_test;
 
 // init vex.flow
 const VF = Vex.Flow;
