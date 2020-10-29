@@ -4,7 +4,7 @@ const janeeyre = {
         {
             clef: 'treble',
             text: `
-
+[1]
             0,.5,b
             1,b
             3.5,b

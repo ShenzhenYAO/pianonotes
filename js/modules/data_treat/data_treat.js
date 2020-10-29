@@ -6,6 +6,8 @@ function makeNoteStrLines(notesdata_theclef, theclef) {
     let strlines = [], bar = -1, emptyline
     strlines_crude.forEach((e, i) => {
         let thestr = e.trim()
+        // ignore lines with [1],etc. these are to indicate the measure numbers
+        if (thestr.indexOf('[')>=0){thestr=''}
         if (thestr.length > 0) {
             if (emptyline ===1) {bar++; emptyline=0};
             let tmp = {}
@@ -15,8 +17,7 @@ function makeNoteStrLines(notesdata_theclef, theclef) {
             tmp.bar = bar
             strlines.push(tmp)
             // console.log(thestr)
-            // console.log(strlines_crude[i-1].trim(),strlines_crude[i-1].trim().length ===0, bar )
-            
+            // console.log(strlines_crude[i-1].trim(),strlines_crude[i-1].trim().length ===0, bar )            
         } else {
             emptyline = 1
         } 

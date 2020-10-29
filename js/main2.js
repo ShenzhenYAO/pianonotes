@@ -205,7 +205,7 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     let theLengthMeasures = theSong[theSong.length -1].measure
     // console.log(theLengthMeasures)
     // add input box
-    console.log(quarternotesperminute)
+    // console.log(quarternotesperminute)
     d3.select('div#bigdiv').append('input').attrs({'id':'start', 'value':0})
     d3.select('div#bigdiv').append('input').attrs({'id':'stop', 'value':theLengthMeasures})
     d3.select('div#bigdiv').append('input').attrs({'id':'speed', 'value':quarternotesperminute})
