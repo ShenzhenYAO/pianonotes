@@ -238,7 +238,18 @@ var sampler; // sample set as a global var, so as to be used for both attack and
             d3.select('g#bigg').transition().attr('transform', 'translate(0, 0)')
         }) // on click
 
-    // console.log(theMeasuresToPlay)
+    
+
+
+    // move to the last measure
+    // get the x position of the last measure
+    let n1measure = staveNoteGroups.treble.length-2
+    let startMeasureX = -staveNoteGroups.treble[n1measure].measure.stave.bounds.x
+    // console.log(startMeasureX)
+    d3.select('g#bigg').transition().attr('transform', ()=>{
+        return 'translate(' + startMeasureX + ', 0)'
+    })
+
 
     
 
