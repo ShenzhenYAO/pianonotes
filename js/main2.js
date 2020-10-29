@@ -8,7 +8,7 @@ const notespace = 120; // can adjust stave width, can enlarge, cannot shrink, we
 const beatperquarternote = 1;
 const timeSignature = '2/4';
 
-var quarternotesperminute = notesStr_test.signature.tempo;
+var quarternotesperminute = notesData.signature.tempo;
 // console.log(quarternotesperminute)
 
 
@@ -205,6 +205,7 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     let theLengthMeasures = theSong[theSong.length -1].measure
     // console.log(theLengthMeasures)
     // add input box
+    console.log(quarternotesperminute)
     d3.select('div#bigdiv').append('input').attrs({'id':'start', 'value':0})
     d3.select('div#bigdiv').append('input').attrs({'id':'stop', 'value':theLengthMeasures})
     d3.select('div#bigdiv').append('input').attrs({'id':'speed', 'value':quarternotesperminute})
@@ -241,14 +242,15 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     
 
 
-    // move to the last measure
-    // get the x position of the last measure
-    let n1measure = staveNoteGroups.treble.length-2
-    let startMeasureX = -staveNoteGroups.treble[n1measure].measure.stave.bounds.x
-    // console.log(startMeasureX)
-    d3.select('g#bigg').transition().attr('transform', ()=>{
-        return 'translate(' + startMeasureX + ', 0)'
-    })
+    // // move to the last measure, Switch it on when inputting a new song
+    // // get the x position of the last measure
+
+    // let n1measure = staveNoteGroups.treble.length-2
+    // let startMeasureX = -staveNoteGroups.treble[n1measure].measure.stave.bounds.x
+    // // console.log(startMeasureX)
+    // d3.select('g#bigg').transition().attr('transform', ()=>{
+    //     return 'translate(' + startMeasureX + ', 0)'
+    // })
 
 
     
