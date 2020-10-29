@@ -1,12 +1,12 @@
 "use strict"
 
-const notesData =  notesStr_test; //janeeyre;
+const notesData =  baikal //notesStr_test; //janeeyre;
 
 // init vex.flow
 const VF = Vex.Flow;
 const notespace = 120; // can adjust stave width, can enlarge, cannot shrink, weird!
 const beatperquarternote = 1;
-const timeSignature = '2/4';
+const timeSignature = '4/4';
 
 var quarternotesperminute = notesData.signature.tempo;
 // console.log(quarternotesperminute)
@@ -242,15 +242,15 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     
 
 
-    // // move to the last measure, Switch it on when inputting a new song
-    // // get the x position of the last measure
+    // move to the last measure, Switch it on when inputting a new song
+    // get the x position of the last measure
 
-    // let n1measure = staveNoteGroups.treble.length-2
-    // let startMeasureX = -staveNoteGroups.treble[n1measure].measure.stave.bounds.x
-    // // console.log(startMeasureX)
-    // d3.select('g#bigg').transition().attr('transform', ()=>{
-    //     return 'translate(' + startMeasureX + ', 0)'
-    // })
+    let n1measure = staveNoteGroups.treble.length-2
+    let startMeasureX = -staveNoteGroups.treble[n1measure].measure.stave.bounds.x
+    // console.log(startMeasureX)
+    d3.select('g#bigg').transition().attr('transform', ()=>{
+        return 'translate(' + startMeasureX + ', 0)'
+    })
 
 
     

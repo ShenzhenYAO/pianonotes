@@ -173,7 +173,7 @@ function addBlankStave(staveSVG_vft, staveBounds, clef, timeSignature, staveid) 
     } // if (staveXYL)
 
     // add the measure number above the treble stave
-    let measurenum = staveid.split('_')[0]
+    let measurenum = parseInt(staveid.split('_')[0])+1
     let clefstr = staveid.split('_')[1]
     if (clefstr !== 'bass'){stave.setText(measurenum, VF.Modifier.Position.ABOVE)}
 
@@ -290,7 +290,11 @@ function makeStaveNotes(vfnotes) {
             prenotegrouptype = curnotegrouptype
         } // check note type  
         if (d.tuplet) {
-            result.push({ notegroupnumber: notegroupnumber, notes: stavenote, beam: 1, tuplet: 1 })
+            // console.log(d)
+            // get the overall beats of the tuplet
+            let fulltupletbeats = parseFloat(d.tuplet.replace('t', ''))
+            // console.log(fulltupletbeats)
+            result.push({ notegroupnumber: notegroupnumber, notes: stavenote, beam: fulltupletbeats>1? 0 :1, tuplet: 1 })
         } else {
             if (d.beam) {
                 result.push({ notegroupnumber: notegroupnumber, notes: stavenote, beam: 1 })
