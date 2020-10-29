@@ -6,7 +6,7 @@ const notesData = janeeyre; //notesStr_test;
 const VF = Vex.Flow;
 const notespace = 120; // can adjust stave width, can enlarge, cannot shrink, weird!
 const beatperquarternote = 1;
-const timeSignature = '4/4';
+const timeSignature = '2/4';
 
 var quarternotesperminute = notesStr_test.signature.tempo;
 // console.log(quarternotesperminute)

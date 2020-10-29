@@ -172,7 +172,12 @@ function addBlankStave(staveSVG_vft, staveBounds, clef, timeSignature, staveid) 
         stave = new VF.Stave(0, 0, 500)
     } // if (staveXYL)
 
-    // 3. add clef and time signature
+    // add the measure number above the treble stave
+    let measurenum = staveid.split('_')[0]
+    let clefstr = staveid.split('_')[1]
+    if (clefstr !== 'bass'){stave.setText(measurenum, VF.Modifier.Position.ABOVE)}
+
+    // 3. add clef and time signature, for the first measure (for which the clef is specfied)
     if (clef) { stave.addClef(clef) }
     if (timeSignature) { stave.addTimeSignature(timeSignature) };
     // 4. draw the staff line (the empty stave)
@@ -227,7 +232,7 @@ function addBlankStavesByClef(vfmeasures, staveSVG_vft) {
             vfstaves.push(tmp)
         } else {
             let timesig
-            if (i === 2) { timesig = '3/4' } else { timesig = null }
+            // if (i === 2) { timesig = '3/4' } else { timesig = null }
             let tmp = {}
             tmp.measure = d.measure
             staveX = staveX + staveWidth // based on x and w of last time
