@@ -96,7 +96,7 @@ async function myPlayPolySample3(baseUrl, samples, notesToPlay) {
 
     Tone.loaded().then(() => {
         Tone.context.resume().then(() => {
-            const time0 = Tone.now() 
+            const time0 = Tone.now()
             notesToPlay.forEach(h => {
                 // console.log(h)
                 sampler.triggerAttackRelease([h.tone], h.durationSeconds, time0 + h.startTime);
@@ -145,18 +145,21 @@ async function ClickToPlaySong(theSong, staveNoteGroups) {
                 }
             })
 
-        // calculate the accumulative durations in secs
-        let lengthOfPlay = theMeasuresToPlay[theMeasuresToPlay.length - 1].tonejsdata.startTime
-        + theMeasuresToPlay[theMeasuresToPlay.length - 1].tonejsdata.durationSeconds
-        // console.log(lengthOfPlay)
+            // calculate the accumulative durations in secs
+            let lengthOfPlay = theMeasuresToPlay[theMeasuresToPlay.length - 1].tonejsdata.startTime
+                + theMeasuresToPlay[theMeasuresToPlay.length - 1].tonejsdata.durationSeconds
+            // console.log(lengthOfPlay)
 
-            // console.log(notesToPlay)
+                        // console.log(notesToPlay)
             if (!repeatTimes) { repeatTimes = 1 }
+            timeoutvars = new Array(repeatTimes)
+            // console.log(timeoutvars.length)
+
             for (let i = 0; i < repeatTimes; i++) {
-                setTimeout(async function () {
+                timeoutvars[i] =setTimeout(async function () {
                     await myPlayPolySample3(baseUrl, samples, notesToPlay)
                     await slideStavenotes(theMeasuresToPlay, staveNoteGroups)
-                }, (lengthOfPlay+3)*1000*i+3000)
+                }, (lengthOfPlay + 3) * 1000 * i + 3000);                
             } // for
 
         }) // on clikc

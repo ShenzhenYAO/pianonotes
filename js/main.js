@@ -8,6 +8,8 @@ const notespace = 120; // can adjust stave width, can enlarge, cannot shrink, we
 const beatperquarternote = 1;
 const timeSignature = '4/4';
 
+var timeoutvars;// must be defined here
+
 var quarternotesperminute = notesData.signature.tempo;
 // console.log(quarternotesperminute)
 
@@ -235,6 +237,12 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     d3.select('button#stopbutton')//.append('button').text('stop').styles({ 'margin-top': '30px' })
         .on('click', async function (theMeasuresToPlay) {
             sampler.dispose()  //.disconnect() // https://tonejs.github.io/docs/r11/Sampler
+
+            // delete events in timeout
+            timeoutvars.forEach(d=>{
+                clearTimeout(d)
+            })
+
             // return to the first stave
             d3.select('g#bigg').transition().attr('transform', 'translate(0, 0)')
         }) // on click
