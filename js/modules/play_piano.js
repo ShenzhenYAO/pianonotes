@@ -157,6 +157,7 @@ async function ClickToPlaySong(theSong, staveNoteGroups) {
 
             for (let i = 0; i < repeatTimes; i++) {
                 timeoutvars[i] =setTimeout(async function () {
+                    d3.select('input#showrepeat').attr('value', ()=>{return (i+1) + ' of ' + repeatTimes; })
                     await myPlayPolySample3(baseUrl, samples, notesToPlay)
                     await slideStavenotes(theMeasuresToPlay, staveNoteGroups)
                 }, (lengthOfPlay + 3) * 1000 * i + 3000);                

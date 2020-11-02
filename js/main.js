@@ -214,6 +214,7 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     d3.select('div#bigdiv').append('input').attrs({'id':'repeat', 'value':1})
     d3.select('div#bigdiv').append('button').attrs({'id':'playbutton'}).text('play the song').styles({ 'margin-top': '30px' })
     d3.select('div#bigdiv').append('button').attrs({'id':'stopbutton'}).text('stop').styles({ 'margin-top': '30px' })
+    d3.select('div#bigdiv').append('input').attr('id', 'showrepeat').attr('class', 'inputdivs').text('10').style('border','0px')
 
     //make the 88 key paino
     await buildPianoWrappers()
@@ -242,6 +243,9 @@ var sampler; // sample set as a global var, so as to be used for both attack and
             timeoutvars.forEach(d=>{
                 clearTimeout(d)
             })
+
+            // clear the repeat time tip box
+            d3.select('input#showrepeat').attr('value', '')
 
             // return to the first stave
             d3.select('g#bigg').transition().attr('transform', 'translate(0, 0)')

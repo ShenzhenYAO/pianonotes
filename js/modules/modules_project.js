@@ -6,7 +6,7 @@ async function makeInputDoms() {
     inputdiv_d3xn.append('input').attr('id', 'input1').attr('value', 0)
     inputdiv_d3xn.append('div').text('number of notes').attr('class', 'inputdivs')
     inputdiv_d3xn.append('input').attr('id', 'input2').attr('value', 10000)
-    inputdiv_d3xn.append('div').attr('class', 'inputdivs')
+    inputdiv_d3xn.append('div').attr('id', 'repeat').attr('class', 'inputdivs')
     inputdiv_d3xn.append('button').attr('id', 'makenote').text('make notes').on('click', async function () { await start(allnotes) }).attr('class', 'inputdivs')
 
     d3.selectAll('div.inputdivs').style('margin', '10px')
