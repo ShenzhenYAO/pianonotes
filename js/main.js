@@ -1,6 +1,7 @@
 "use strict"
 
-const notesData = dayu  // janeeyre //autumnleaves; // baikal;  // //notesStr_test; //janeeyre;
+var notesData = dayu  // janeeyre //autumnleaves; // baikal;  // //notesStr_test; //janeeyre;
+const songnames = ['dayu', 'janeeyre', 'autumnleaves', 'baikal', 'notesStr_test']
 
 // init vex.flow
 const VF = Vex.Flow;
@@ -35,36 +36,102 @@ const samples = {
 var sampler; // sample set as a global var, so as to be used for both attack and disconnect
 
 
-(async () => {    
+(async () => {
 
+
+    // part 1, make a drop down menu for selecting songs
+    await make_song_select();
+
+    // part 2, make divs and g elements for staves
     // make a big div for stavenotes, and piano icons
     // including a div, an svg, and a g, zoom/pan enabled
     await makeBigDivs()
     // astr='makeBigDivs() run successfully'
     // d3.select('div#statusdiv').html(astr)
 
+    // part 3a, load the default song
+    await make_stavenotes_input_pianokeys()
+
+    // part 3b, select a song and load the selected song
+    let songselect_d3pn = d3.select('select#select_songs')
+    songselect_d3pn.on('change', async (e) => { 
+        notesData = eval(e.target.value) // get value of the var name in e.target.value (like dayu)
+        await make_stavenotes_input_pianokeys()
+    });    
+
+})()
+
+
+// part 1, make a drop down menu for selecting songs
+async function make_song_select() {
+
+    d3.select('body').append('label').text('Songs')
+    let songselect_d3pn = d3.select('body').append('select').attrs({ 'name': 'songs', 'id': 'select_songs' })
+    for (let i = 0; i < songnames.length; i++) {
+        songselect_d3pn.append('option')
+            .attrs({ 'value': songnames[i] })
+            .text(songnames[i])
+    }
+}; //make_song_select
+
+// part 4 to 10, make stavenotes, input elements, and pianokeys
+async function make_stavenotes_input_pianokeys() {
+
+    // clean up the contents in g#bigg
+    d3.select('g#bigg').html('')
+    d3.select('div#div_controls').remove()
+    d3.select('div#pianodiv').remove()
+
+    // part 4. draw stavenots
+    let { foldedSongStaveNotes, staveNoteGroups, theSong } = await make_stavenotes();
+
+    // part 5 add piano icons
+    await add_piano_icons(foldedSongStaveNotes, staveNoteGroups, theSong);
+
+    // part 6, add the control inputs
+    await make_control_inputs(theSong);
+
+    //part 7 make the 88 key paino
+    await make_a_piano()
+
+    // part 8, enable to click and play the song
+    // /************the following is to play sound by tonejs */
+    // theMeasuresToPlay = prepareNotesforTonejs(theMeasuresToPlay)
+    // console.log(theSong)
+    await ClickToPlaySong(theSong, staveNoteGroups)
+    /*****the above is to play song by tone.js  *********************** */
+
+    // part 9. enable to click and stop playing the song
+    await click_to_stop()
+
+    // part 10. move to the last measure
+    await move_to_last_measure(staveNoteGroups)
+
+}; // make_stavenotes_input_pianokeys
+
+// part 4. draw stavenots
+async function make_stavenotes(){
 
     // get the standardized notes
     // 1. get a collection of notesdata by clef
     // notesdata like {notes: [{clef: 'treble, text:''}}, ]}; notesdate_clefs: [{clef: 'treble, text:''}}, ]
     let notesdate_clefs = notesData.notes
+    // notesData
     // console.log(notesdate_clefs)
 
     // 2. convert to standard note data (with tone, octaveN, etc)
     let stdnotesdata_clefs = convertToStdNotes(notesdate_clefs)
     // console.log(stdnotesdata_clefs)
 
-
-    //4. draw stave notes
-    //4a. in the bigg, add a stavenoteg 
+    // 3. in the bigg, add a stavenoteg 
     d3.select('g#bigg').append('g').attrs({ 'id': 'staveg' })
 
-    // 5. in the stevenoteg, add an svg as the renderer for VF stave notes 
+    // 4. in the stevenoteg, add an svg as the renderer for VF stave notes 
     let parentID = 'staveg'
     let parentDom = d3.select('g#staveg').node()
     let staveSVG_vft = makeStaveSvg(parentDom) // by default, the svg is growing with the conents inside
 
-    // 6. prepare the notedata for VF to draw stavenotes
+    // 5. prepare the notedata for VF to draw stavenotes
     /**
      The notes of the same dataline (in the raw data) are to be added in the same vertical postion, and played at the same time
      In VF, these same-dataline notes are called stavenotes
@@ -117,8 +184,6 @@ var sampler; // sample set as a global var, so as to be used for both attack and
 
     // the following is to link data to the individual notehead doms
     /*********************************************************************************** */
-
-
     //1. unfold the staveNoteGroups by clef down to individual note level
     let allStaveNoteData = { treble: [], bass: [] }
     allStaveNoteData.treble = makeStaveNoteArrayByClef(staveNoteGroups, 'treble')
@@ -166,11 +231,14 @@ var sampler; // sample set as a global var, so as to be used for both attack and
 
     // the above is to link data to the individual notehead doms
     /*********************************************************************************** */
+    return { foldedSongStaveNotes: foldedSongStaveNotes, staveNoteGroups: staveNoteGroups, theSong: theSong }
+
+}; //async function make_stavenotes
 
 
-
-    // part two add the piano icons
-    /************************************************************** */
+// part 5 add piano icons
+/************************************************************** */
+async function add_piano_icons(foldedSongStaveNotes, staveNoteGroups, theSong) {
 
     // create pianostavenoteg elements, each for a stavenote unit
     let parentDOM = d3.select('g#bigg').node()
@@ -185,9 +253,12 @@ var sampler; // sample set as a global var, so as to be used for both attack and
 
     // add the pianoicon into the data of theSong, making it like {clef, data, noteheaddom, pianostavenotegdom}
     theSong = mergePianoStavenoteGsIntoTheSong(theSong, inner_PianoStavenoteg)
-
     /*****the above is to add piano icons*********************** */
+}; //async function add_piano_icons()
 
+
+// part 6, add the control inputs
+async function make_control_inputs(theSong) {
     // console.log(theSong)
 
     /**select the measures to play*/
@@ -203,20 +274,23 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     // })
 
 
-
-    let theLengthMeasures = theSong[theSong.length -1].measure
+    let theLengthMeasures = theSong[theSong.length - 1].measure
     // console.log(theLengthMeasures)
     // add input box
     // console.log(quarternotesperminute)
-    d3.select('div#bigdiv').append('input').attrs({'id':'start', 'value':0})
-    d3.select('div#bigdiv').append('input').attrs({'id':'stop', 'value':theLengthMeasures})
-    d3.select('div#bigdiv').append('input').attrs({'id':'speed', 'value':quarternotesperminute})
-    d3.select('div#bigdiv').append('input').attrs({'id':'repeat', 'value':1})
-    d3.select('div#bigdiv').append('button').attrs({'id':'playbutton'}).text('play the song').styles({ 'margin-top': '30px' })
-    d3.select('div#bigdiv').append('button').attrs({'id':'stopbutton'}).text('stop').styles({ 'margin-top': '30px' })
-    d3.select('div#bigdiv').append('input').attr('id', 'showrepeat').attr('class', 'inputdivs').text('10').style('border','0px')
+    let controlsdiv_d3pn = d3.select('div#bigdiv').append('div').attrs({"id":"div_controls"})
+    controlsdiv_d3pn.append('label').text('Start, end, speed, repeating times')
+    controlsdiv_d3pn.append('input').attrs({ 'id': 'start', 'value': 0 })
+    controlsdiv_d3pn.append('input').attrs({ 'id': 'stop', 'value': theLengthMeasures })
+    controlsdiv_d3pn.append('input').attrs({ 'id': 'speed', 'value': quarternotesperminute })
+    controlsdiv_d3pn.append('input').attrs({ 'id': 'repeat', 'value': 1 })
+    controlsdiv_d3pn.append('button').attrs({ 'id': 'playbutton' }).text('play the song').styles({ 'margin-top': '30px' })
+    controlsdiv_d3pn.append('button').attrs({ 'id': 'stopbutton' }).text('stop').styles({ 'margin-top': '30px' })
+    controlsdiv_d3pn.append('input').attr('id', 'showrepeat').attr('class', 'inputdivs').text('10').style('border', '0px')
+}; //function make_control_inputs
 
-    //make the 88 key paino
+//part 7 make the 88 key paino
+async function make_a_piano() {
     await buildPianoWrappers()
     // astr= astr + '<br/>'+'buildPianoWrappers() run successfully'
     // d3.select('div#statusdiv').html(astr)
@@ -224,23 +298,17 @@ var sampler; // sample set as a global var, so as to be used for both attack and
     await buildPianoKeys()
     // astr= astr + '<br/>'+'buildPianoKeys() run successfully'
     // d3.select('div#statusdiv').html(astr)
+}; //make_a_piano
 
 
-    
-    // /************the following is to play sound by tonejs */
-    // theMeasuresToPlay = prepareNotesforTonejs(theMeasuresToPlay)
-
-    // console.log(theSong)
-
-    await ClickToPlaySong(theSong, staveNoteGroups)      
-
-    /*****the above is to play song by tone.js  *********************** */
+// part 9. enable to click and stop playing the song
+async function click_to_stop() {
     d3.select('button#stopbutton')//.append('button').text('stop').styles({ 'margin-top': '30px' })
         .on('click', async function (theMeasuresToPlay) {
             sampler.dispose()  //.disconnect() // https://tonejs.github.io/docs/r11/Sampler
 
             // delete events in timeout
-            timeoutvars.forEach(d=>{
+            timeoutvars.forEach(d => {
                 clearTimeout(d)
             })
 
@@ -251,25 +319,20 @@ var sampler; // sample set as a global var, so as to be used for both attack and
             d3.select('g#bigg').transition().attr('transform', 'translate(0, 0)')
         }) // on click
 
-    
+}; // click_to_stop
 
 
+// part 10. move to the last measure
+async function move_to_last_measure(staveNoteGroups) {
     // move to the last measure, Switch it on when inputting a new song
     // get the x position of the last measure
-
-    let n1measure = staveNoteGroups.treble.length-2
+    let n1measure = staveNoteGroups.treble.length - 2
     let startMeasureX = -staveNoteGroups.treble[n1measure].measure.stave.bounds.x
     // console.log(startMeasureX)
-    d3.select('g#bigg').transition().attr('transform', ()=>{
+    d3.select('g#bigg').transition().attr('transform', () => {
         return 'translate(' + startMeasureX + ', 0)'
     })
-
-
-    
-
-
-
-})()
+}; // move_to_last_measure
 
 
 

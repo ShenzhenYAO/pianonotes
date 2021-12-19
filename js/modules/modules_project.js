@@ -17,7 +17,7 @@ async function makeInputDoms() {
             d3.select('button#makenote').node().click()
         }
     })
-} //makeInputDoms
+}; //makeInputDoms
 
 async function makeBigDivs() {
     const bigdiv = d3.select('body').append('div')

@@ -81,7 +81,7 @@ function prepareNotesforTonejs(theSong) {
     theSong = theSong_treble.concat(theSong_bass)
     theSong = theSong.sort((a, b) => (a.momentid > b.momentid) ? 1 : -1)
     return theSong
-} // prepareNotesforTonejs()
+}; // prepareNotesforTonejs()
 
 
 // Tone.Sampler to play poly sound file (e.g., c4.mp3)
@@ -105,7 +105,7 @@ async function myPlayPolySample3(baseUrl, samples, notesToPlay) {
         }) // Tone.context.resume()
     }) // Tone.loaded()
 
-} //
+}; //
 
 
 async function ClickToPlaySong(theSong, staveNoteGroups) {
